@@ -1,0 +1,132 @@
+/* ---- Style général ---- */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #0a221b;
+  color: #e0f2f1;
+  display: flex;
+  height: 100vh;
+}
+
+/* ---- Barre latérale ---- */
+.sidebar {
+  width: 200px;
+  background-color: #072016;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar h1 {
+  font-size: 18px;
+  color: #a5d6a7;
+  margin-bottom: 30px;
+}
+
+.sidebar a {
+  color: #e0f2f1;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #66bb6a;
+}
+
+/* ---- Conteneur central ---- */
+.container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ---- Formulaires ---- */
+.form-box {
+  background-color: #102d23;
+  padding: 30px;
+  border-radius: 10px;
+  width: 350px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.form-box h2 {
+  color: #b2dfdb;
+  margin-bottom: 10px;
+}
+
+.form-box p {
+  font-size: 14px;
+  color: #a5a5a5;
+  margin-bottom: 20px;
+}
+
+/* ---- Champs ---- */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 15px;
+  background-color: #0f2a21;
+  color: white;
+}
+
+input:focus {
+  outline: 1px solid #4caf50;
+}
+
+/* ---- Boutons ---- */
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2ecc71;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #27ae60;
+}
+
+/* ---- Liens et texte ---- */
+a {
+  color: #2ecc71;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ---- Checkbox ---- */
+.checkbox {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.checkbox input {
+  margin-right: 8px;
+}
+
+/* ---- Icône mail envoyée ---- */
+.icon-mail {
+  font-size: 48px;
+  color: #2ecc71;
+  margin-bottom: 15px;
+}
