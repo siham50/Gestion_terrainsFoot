@@ -1,9 +1,9 @@
-# ⚽ Gestion des Réservations de Terrains de Foot
+# Gestion des Réservations de Terrains de Foot
 
 ## 🎓 Mini Projet 2 — École Nationale des Sciences Appliquées de Tétouan
-> TP4 — Application Web PHP Orientée Objet  
+> TP4 — Application Web PHP Orientée Objet
 > Auteurs : _Hariss Houssam_, _El Fadil Assel_, _El Maaroufi Siham_, _El Ouazzani Touhami Aymane_, _Sadiki Abderrahim_  
-> Encadrant : _[Al Achhab Mohammed]_  
+> Encadrant : _[Al Achhab Mohammed]_
 > Année universitaire : 2025
 
 ---
@@ -28,8 +28,8 @@ Développer une application web permettant la **gestion complète des réservati
 ├── index.php                           # Page d’accueil / redirection vers réservation
 │
 ├── config/
-│   ├── database.php                    # Connexion PDO à la base de données
-│   └── config.php                      # Constantes globales (ex : EMAIL_ADMIN, BASE_URL)
+│   ├── Database.php                    # Connexion PDO à la base de données
+│   └── Config.php                      # Constantes globales (ex : EMAIL_ADMIN, BASE_URL)
 │
 ├── classes/                            # Modèles (logique métier)
 │   ├── Database.php                    # Gestion de la connexion PDO
@@ -52,42 +52,40 @@ Développer une application web permettant la **gestion complète des réservati
 │
 ├── views/
 │   ├── public/
-│   │   ├── home.php                    # Page d’accueil
-│   │   ├── reservation_form.php        # Formulaire de réservation
-│   │   ├── confirmation.php            # Confirmation de réservation
-│   │   ├── disponibilite.php           # Disponibilités AJAX
-│   │   ├── tournois.php                # Liste / inscription tournois
-│   │   └── newsletter.php              # Formulaire d’abonnement newsletter
+│   │   ├── Home.php                    # Page d’affichage des terrains
+│   │   ├── Reservation_form.php        # Formulaire de réservation
+│   │   ├── Confirmation.php            # Confirmation de réservation
+│   │   ├── Disponibilite.php           # Disponibilités AJAX
+│   │   ├── Tournois.php                # Liste / inscription tournois
+│   │   └── Newsletter.php              # Formulaire d’abonnement newsletter
 │   │
 │   └── admin/
-│       ├── dashboard.php               # Tableau de bord administrateur
-│       ├── ajouter_terrain.php
-│       ├── modifier_prix.php
-│       ├── liste_reservations.php
-│       ├── factures.php
-│       ├── gestion_tournois.php        # CRUD des tournois
-│       ├── gestion_equipes.php         # Gérer les équipes des tournois
-│       └── newsletter_admin.php        # Gestion des abonnés + envoi d’email groupé
+│       ├── Dashboard.php               # Tableau de bord administrateur
+│       ├── Ajouter_terrain.php
+│       ├── Modifier_prix.php
+│       ├── Liste_reservations.php
+│       ├── Factures.php
+│       ├── Gestion_tournois.php        # CRUD des tournois
+│       ├── Gestion_equipes.php         # Gérer les équipes des tournois
+│       └── Newsletter_admin.php        # Gestion des abonnés + envoi d’email groupé
 │
 ├── assets/
 │   ├── css/
-│   │   ├── style.css
-│   │   └── admin.css
+│   │   ├── Style.css
+│   │   └── Admin.css
 │   ├── js/
-│   │   ├── main.js
-│   │   ├── disponibilite.js            # Requêtes AJAX pour dispo terrains
-│   │   └── newsletter.js               # Abonnement AJAX
+│   │   ├── Main.js
+│   │   ├── Disponibilite.js            # Requêtes AJAX pour dispo terrains
+│   │   └── Newsletter.js               # Abonnement AJAX
 │   └── images/
 │
 ├── includes/
-│   ├── header.php
-│   ├── footer.php
-│   └── navbar.php
+│   ├── Footer.php
+│   └── Navbar.php
 │
 ├── utils/
-│   ├── functions.php                   # Fonctions génériques
-│   ├── mailer.php                      # Envoi d’e-mails (confirmation, newsletter)
-│   └── pdf_generator.php               # Génération des factures PDF
+│   ├── Mailer.php                      # Envoi d’e-mails (confirmation, newsletter)
+│   └── PdfGenerator.php               # Génération des factures PDF
 │
 └── README.md                           # Documentation du projet
 ```
@@ -137,14 +135,14 @@ Développer une application web permettant la **gestion complète des réservati
 
 ### 5. **Fonctionnalités principales**
 
-✅ Formulaire de réservation complet (date, créneau, type, options)  
-✅ Enregistrement des données en base via PDO  
-✅ Modification possible jusqu’à **48h avant le match**  
-✅ Affichage **asynchrone** des disponibilités via **AJAX**  
-✅ Génération automatique de **factures PDF**  
-✅ Gestion des **tournois** et des **services optionnels**  
-✅ Interface **administrateur sécurisée**  
-✅ Envoi d’**e-mails de confirmation** aux utilisateurs  
+ Formulaire de réservation complet (date, créneau, type, options)  
+ Enregistrement des données en base via PDO  
+ Modification possible jusqu’à **48h avant le match**  
+ Affichage **asynchrone** des disponibilités via **AJAX**  
+ Génération automatique de **factures PDF**  
+ Gestion des **tournois** et des **services optionnels**  
+ Interface **administrateur sécurisée**  
+ Envoi d’**e-mails de confirmation** aux utilisateurs  
 
 ---
 
@@ -165,12 +163,12 @@ Développer une application web permettant la **gestion complète des réservati
 
 ## 🔐 Sécurité & Bonnes pratiques
 
-- 🔒 Requêtes préparées (`PDO::prepare`)
-- 🧹 Nettoyage des entrées (`htmlspecialchars`, `filter_var`)
-- 🔐 Authentification & gestion des sessions pour les administrateurs
-- ⚡ Validation des formulaires côté **client et serveur**
-- 🗃️ Respect strict du **modèle MVC**
-- 🌐 Séparation des scripts JS & CSS dans le dossier `/assets/`
+-  Requêtes préparées (`PDO::prepare`)
+-  Nettoyage des entrées (`htmlspecialchars`, `filter_var`)
+-  Authentification & gestion des sessions pour les administrateurs
+-  Validation des formulaires côté **client et serveur**
+-  Respect strict du **modèle MVC**
+-  Séparation des scripts JS & CSS dans le dossier `/assets/`
 
 ---
 
