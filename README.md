@@ -15,7 +15,7 @@ Développer une application web permettant la **gestion complète des réservati
 - La **réservation en ligne** par les utilisateurs (date, créneau horaire, taille/type de terrain, services optionnels)
 - La **gestion administrative** (terrains, prix, factures, tournois) via une **interface administrateur**
 - La **génération automatique des factures**
-- L’**affichage asynchrone** de la disponibilité des terrains (AJAX)
+- L’**implémentation AJAX**
 - L’**envoi automatique d’e-mails de confirmation**
 
 ---
@@ -25,44 +25,71 @@ Développer une application web permettant la **gestion complète des réservati
 ```
 /reservation_terrains/
 │
-├── index.php                       # Page d’accueil
+├── index.php                           # Page d’accueil / redirection vers réservation
 │
 ├── config/
-│   └── database.php                # Connexion PDO à la base de données
+│   ├── database.php                    # Connexion PDO à la base de données
+│   └── config.php                      # Constantes globales (ex : EMAIL_ADMIN, BASE_URL)
 │
-├── classes/                        # Modèles (logique métier)
-│   ├── Terrain.php
-│   ├── Reservation.php
-│   ├── Utilisateur.php
-│   ├── Facture.php
-│   └── Database.php
+├── classes/                            # Modèles (logique métier)
+│   ├── Database.php                    # Gestion de la connexion PDO
+│   ├── Terrain.php                     # Modèle de terrain
+│   ├── Reservation.php                 # Modèle de réservation
+│   ├── Utilisateur.php                 # Modèle utilisateur
+│   ├── Facture.php                     # Modèle facture
+│   ├── Prix.php                        # Modèle des tarifs terrains/services
+│   ├── Tournoi.php                     # Modèle tournoi
+│   ├── Equipe.php                      # Modèle d’équipe (tournoi)
+│   └── Newsletter.php                  # Modèle d’abonné à la newsletter
 │
-├── controllers/                    # Logique applicative
-│   ├── TerrainController.php
-│   ├── ReservationController.php
-│   ├── UtilisateurController.php
-│   └── AdminController.php
+├── controllers/                        # Logique applicative
+│   ├── TerrainController.php           # Gère les terrains (affichage dispo, CRUD admin)
+│   ├── ReservationController.php       # Gère les réservations (création, modif, facture)
+│   ├── UtilisateurController.php       # Gère connexion / inscription
+│   ├── AdminController.php             # Dashboard et actions d’administration
+│   ├── TournoiController.php           # Gestion complète des tournois
+│   └── NewsletterController.php        # Abonnement, désabonnement, envoi des mails
 │
-├── views/                          # Interfaces utilisateur
+├── views/
 │   ├── public/
-│   │   ├── reservation_form.php
-│   │   ├── confirmation.php
-│   │   └── disponibilite.php
+│   │   ├── home.php                    # Page d’accueil
+│   │   ├── reservation_form.php        # Formulaire de réservation
+│   │   ├── confirmation.php            # Confirmation de réservation
+│   │   ├── disponibilite.php           # Disponibilités AJAX
+│   │   ├── tournois.php                # Liste / inscription tournois
+│   │   └── newsletter.php              # Formulaire d’abonnement newsletter
+│   │
 │   └── admin/
-│       ├── dashboard.php
+│       ├── dashboard.php               # Tableau de bord administrateur
 │       ├── ajouter_terrain.php
 │       ├── modifier_prix.php
 │       ├── liste_reservations.php
-│       └── factures.php
+│       ├── factures.php
+│       ├── gestion_tournois.php        # CRUD des tournois
+│       ├── gestion_equipes.php         # Gérer les équipes des tournois
+│       └── newsletter_admin.php        # Gestion des abonnés + envoi d’email groupé
 │
-├── assets/                         # Ressources statiques
+├── assets/
 │   ├── css/
+│   │   ├── style.css
+│   │   └── admin.css
 │   ├── js/
+│   │   ├── main.js
+│   │   ├── disponibilite.js            # Requêtes AJAX pour dispo terrains
+│   │   └── newsletter.js               # Abonnement AJAX
 │   └── images/
 │
-└── includes/                       # Éléments réutilisables
-    ├── header.php
-    └── footer.php
+├── includes/
+│   ├── header.php
+│   ├── footer.php
+│   └── navbar.php
+│
+├── utils/
+│   ├── functions.php                   # Fonctions génériques
+│   ├── mailer.php                      # Envoi d’e-mails (confirmation, newsletter)
+│   └── pdf_generator.php               # Génération des factures PDF
+│
+└── README.md                           # Documentation du projet
 ```
 
 ---
