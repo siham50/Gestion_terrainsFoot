@@ -3,7 +3,7 @@
 ## 🎓 Mini Projet 2 — École Nationale des Sciences Appliquées de Tétouan
 > TP4 — Application Web PHP Orientée Objet  
 > Auteurs : _Hariss Houssam_, _El Fadil Assel_, _El Maaroufi Siham_, _El Ouazzani Touhami Aymane_, _Sadiki Abderrahim_  
-> Encadrant : _[Nom du professeur]_  
+> Encadrant : _[Al Achhab Mohammed]_  
 > Année universitaire : 2025
 
 ---
