@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Créer un compte | Nod Tasskhoun</title>
+  <script src="https://www.google.com/recaptcha/api.js?render=6Lezz_crAAAAAMuV_nRNCcTA-KQHwhw7f3jg9y8N"></script>
+  <style>
+    .grecaptcha-badge { position: fixed !important; right: 16px !important; bottom: 16px !important; z-index: 2147483647 !important; opacity: 1 !important; visibility: visible !important; }
+  </style>
+
+  <!-- ✅ CSS plugin téléphone -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.12.2/build/css/intlTelInput.css">
+
+  <!-- ✅ Style global -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0d241e;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .register-container {
+      background-color: #0f2c25;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      width: 400px;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    p.subtitle {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: none;
+      background-color: #09231e;
+      color: #fff;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    input::placeholder {
+      color: #bbb;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #ccc;
+      margin-bottom: 15px;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+      accent-color: #00c26e;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #00c26e;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background-color: #00a55d;
+    }
+
+    .login-link {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .login-link a {
+      color: #00c26e;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* ✅ Style du plugin */
+    .iti {
+      width: 100%;
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .iti__country-list {
+      background-color: #0d1f1b !important;
+      color: #fff !important;
+      border: 1px solid #1f3d33 !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      max-height: 200px !important;
+      overflow-y: auto !important;
+      z-index: 1000 !important;
+    }
+
+    .iti__country:hover {
+      background-color: #1a2e28 !important;
+    }
+
+    .iti__flag-container {
+      z-index: 2 !important;
+    }
+
+    /* ✅ Séparation entre la liste et le champ suivant */
+    .iti__country-list {
+      margin-bottom: 10px;
+    }
+
+    /* ✅ Corrige l’erreur quand aucun pays trouvé */
+    .iti__country-list.no-results {
+      text-align: center;
+      padding: 10px;
+      color: #bbb;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="register-container">
+    <h2>Créer un compte</h2>
+    <p class="subtitle">Rejoignez Nod Tasskhoun aujourd'hui</p>
+
+    <?php if (!empty($message)) echo $message; ?>
+
+   <form action="register.php" method="POST" id="registerForm">
+      <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+      <input type="text" id="prenom" name="first_name" placeholder="Prénom" required>
+      <input type="text" id="nom" name="last_name" placeholder="Nom" required>
+      <input type="email" id="email" name="email" placeholder="Email" required>
+      <input type="tel" id="phone" name="phone" placeholder="Votre numéro de téléphone" required>
+      <input type="password" id="password" name="password" placeholder="Mot de passe" required>
+      <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmez le mot de passe" required>
+
+      <label><input type="checkbox" required> J’accepte les conditions d’utilisation</label>
+      <button type="submit" name="submit">Créer mon compte</button>
+    </form>
+
+    <div class="login-link">
+      Vous avez déjà un compte ? <a href="login.html">Se connecter</a>
+    </div>
+  </div>
+
+  <!-- ✅ JS plugin téléphone -->
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.12.2/build/js/intlTelInput.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.12.2/build/js/utils.js"></script>
+
+<script>
+  const input = document.querySelector("#phone");
+  const iti = window.intlTelInput(input, {
+    initialCountry: "ma",
+    preferredCountries: ["ma", "fr", "us"],
+    separateDialCode: true,
+    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@25.12.2/build/js/utils.js",
+  });
+
+  // Validation en temps réel des mots de passe
+  const password = document.querySelector("#password");
+  const confirmPassword = document.querySelector("#confirm_password");
+  
+  function validatePasswords() {
+    if (confirmPassword.value && password.value !== confirmPassword.value) {
+      confirmPassword.style.borderColor = "#ff4444";
+      confirmPassword.style.borderWidth = "2px";
+    } else {
+      confirmPassword.style.borderColor = "";
+      confirmPassword.style.borderWidth = "";
+    }
+  }
+  
+  password.addEventListener("input", validatePasswords);
+  confirmPassword.addEventListener("input", validatePasswords);
+
+  const form = document.querySelector("#registerForm");
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    // Validation des mots de passe
+    const passwordValue = password.value;
+    const confirmPasswordValue = confirmPassword.value;
+    
+    if (passwordValue !== confirmPasswordValue) {
+      e.preventDefault(); // Empêche l'envoi du formulaire
+      alert("❌ Les mots de passe ne correspondent pas !");
+      confirmPassword.focus();
+      return false;
+    }
+    
+    // ✅ Mettre à jour le numéro de téléphone AVANT l'envoi
+    const fullNumber = iti.getNumber(); // Récupère le numéro complet
+    console.log("Numéro détecté par le plugin:", fullNumber);
+    console.log("Valeur du champ téléphone:", document.querySelector("#phone").value);
+    
+    // Si le plugin ne détecte pas de numéro, utiliser la valeur du champ
+    if (fullNumber) {
+      document.querySelector("#phone").value = fullNumber;
+      console.log("Numéro de téléphone mis à jour:", fullNumber);
+    } else {
+      // Utiliser la valeur brute du champ si le plugin ne fonctionne pas
+      const phoneValue = document.querySelector("#phone").value;
+      if (phoneValue && phoneValue.length > 5) {
+        console.log("Utilisation de la valeur brute du champ:", phoneValue);
+        // Ne pas empêcher l'envoi, laisser le serveur valider
+      } else {
+        e.preventDefault();
+        alert("❌ Veuillez entrer un numéro de téléphone valide !");
+        return false;
+      }
+    }
+
+    // Générer le token reCAPTCHA v3 avant soumission
+    grecaptcha.ready(function() {
+      grecaptcha.execute('6Lezz_crAAAAAMuV_nRNCcTA-KQHwhw7f3jg9y8N', {action: 'register'}).then(function(token) {
+        document.getElementById('g-recaptcha-response').value = token;
+        form.submit();
+      });
+    });
+  });
+
+  // Exécution initiale pour forcer l'apparition du badge
+  if (window.grecaptcha) {
+    grecaptcha.ready(function() {
+      grecaptcha.execute('6Lezz_crAAAAAMuV_nRNCcTA-KQHwhw7f3jg9y8N', {action: 'page_load'}).then(function(token) {
+        // token préchargé ignoré
+      });
+    });
+  }
+</script>
+
+
+</body>
+</html>

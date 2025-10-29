@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Connexion | Tasskhon</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.google.com/recaptcha/api.js?render=6Le8fPsrAAAAAKM-yZl3_pNmhM1-jambVnNHCGxI"></script>
+  <style>
+    /* Assure l'affichage du badge reCAPTCHA en bas à droite au-dessus de l'UI */
+    .grecaptcha-badge { position: fixed !important; right: 16px !important; bottom: 16px !important; z-index: 2147483647 !important; opacity: 1 !important; visibility: visible !important; }
+    .alert {
+      position: fixed; top: 18px; right: 18px; z-index: 2147483647;
+      background: #ffeded; border: 1px solid #ff9b9b; color: #7a1d1d;
+      padding: 12px 16px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size: 14px;
+      display: none;
+    }
+    .alert.show { display: block; animation: slideIn .25s ease-out; }
+    @keyframes slideIn { from { transform: translateY(-8px); opacity: .6; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+
+</head>
+<body>
+  <div class="sidebar">
+    <h1>🏠 Nod Tasskhoun</h1>
+    <a href="#">🏡 Accueil</a>
+    <a href="#">📅 Mes réservations</a>
+    <a href="#">🏆 Tournois</a>
+    <a href="#">✉️ Newsletter</a>
+  </div>
+
+  <div class="container">
+    <div class="form-box">
+      <h2>Connexion</h2>
+      <p>Connectez-vous à votre compte Tasskhon</p>
+      <form method="POST" action="login.php" id="loginForm">
+        <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+        <input type="email" name="username" placeholder="votre@email.com" required>
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <button type="submit" id="loginBtn">Se connecter</button>
+        <p><a href="forgot-password.html">Mot de passe oublié ?</a></p>
+        <p>Vous n'avez pas de compte ? <a href="register.html">Créer un compte</a></p>
+      </form>
+    </div>
+  </div>
+  <div id="errorBanner" class="alert"></div>
+  <script>
+    // Forcer l'apparition du badge et précharger un token (ignoré)
+    if (window.grecaptcha) {
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6Le8fPsrAAAAAKM-yZl3_pNmhM1-jambVnNHCGxI', {action: 'page_load'}).then(function(token) {});
+      });
+    }
+    const form = document.getElementById('loginForm');
+    if (form && window.grecaptcha) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        grecaptcha.ready(function() {
+          grecaptcha.execute('6Le8fPsrAAAAAKM-yZl3_pNmhM1-jambVnNHCGxI', {action: 'login'}).then(function(token) {
+            document.getElementById('g-recaptcha-response').value = token;
+            form.submit();
+          });
+        });
+      });
+    }
+    // Afficher un message d'erreur élégant depuis ?error=...
+    const params = new URLSearchParams(window.location.search);
+    const err = params.get('error');
+    if (err) {
+      const banner = document.getElementById('errorBanner');
+      banner.textContent = err;
+      banner.classList.add('show');
+      // Masquer après 6 secondes
+      setTimeout(() => banner.classList.remove('show'), 6000);
+      // Nettoyer l'URL pour ne pas réafficher au refresh
+      if (history.replaceState) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('error');
+        history.replaceState({}, '', url);
+      }
+    }
+  </script>
+</body>
+</html>
