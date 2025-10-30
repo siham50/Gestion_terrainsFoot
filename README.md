@@ -1,6 +1,6 @@
 # Gestion des Réservations de Terrains de Foot
 
-## 🎓 Mini Projet 2 — École Nationale des Sciences Appliquées de Tétouan
+## Mini Projet 2 — École Nationale des Sciences Appliquées de Tétouan
 > TP4 — Application Web PHP Orientée Objet
 > Auteurs : _Hariss Houssam_, _El Fadil Assel_, _El Maaroufi Siham_, _El Ouazzani Touhami Aymane_, _Sadiki Abderrahim_  
 > Encadrant : _[Al Achhab Mohammed]_
@@ -8,7 +8,7 @@
 
 ---
 
-## 🧩 Objectif du projet
+## Objectif du projet
 
 Développer une application web permettant la **gestion complète des réservations de terrains de football**, incluant :
 
@@ -20,7 +20,7 @@ Développer une application web permettant la **gestion complète des réservati
 
 ---
 
-## 🏗️ Architecture du projet (MVC)
+## Architecture du projet (MVC)
 
 ```
 /reservation_terrains/
@@ -39,7 +39,6 @@ Développer une application web permettant la **gestion complète des réservati
 │   ├── Facture.php                     # Modèle facture
 │   ├── Prix.php                        # Modèle des tarifs terrains/services
 │   ├── Tournoi.php                     # Modèle tournoi
-│   ├── Equipe.php                      # Modèle d’équipe (tournoi)
 │   └── Newsletter.php                  # Modèle d’abonné à la newsletter
 │
 ├── controllers/                        # Logique applicative
@@ -54,8 +53,7 @@ Développer une application web permettant la **gestion complète des réservati
 │   ├── public/
 │   │   ├── Home.php                    # Page d’affichage des terrains
 │   │   ├── Reservation_form.php        # Formulaire de réservation
-│   │   ├── Confirmation.php            # Confirmation de réservation
-│   │   ├── Disponibilite.php           # Disponibilités AJAX
+│   │   ├── MesReservations.php         # Les réservations de l'utilisateur
 │   │   ├── Tournois.php                # Liste / inscription tournois
 │   │   └── Newsletter.php              # Formulaire d’abonnement newsletter
 │   │
@@ -63,11 +61,7 @@ Développer une application web permettant la **gestion complète des réservati
 │       ├── Dashboard.php               # Tableau de bord administrateur
 │       ├── Ajouter_terrain.php
 │       ├── Modifier_prix.php
-│       ├── Liste_reservations.php
-│       ├── Factures.php
-│       ├── Gestion_tournois.php        # CRUD des tournois
-│       ├── Gestion_equipes.php         # Gérer les équipes des tournois
-│       └── Newsletter_admin.php        # Gestion des abonnés + envoi d’email groupé
+│       └── Liste_reservations.php
 │
 ├── assets/
 │   ├── css/
@@ -84,10 +78,10 @@ Développer une application web permettant la **gestion complète des réservati
 │   └── Navbar.php
 │
 ├── utils/
-│   ├── Mailer.php                      # Envoi d’e-mails (confirmation, newsletter)
+│   ├── Mailer.php                     # Envoi d’e-mails (confirmation, newsletter)
 │   └── PdfGenerator.php               # Génération des factures PDF
 │
-└── README.md                           # Documentation du projet
+└── README.md                          # Documentation du projet
 ```
 
 ---
@@ -135,18 +129,18 @@ Développer une application web permettant la **gestion complète des réservati
 
 ### 5. **Fonctionnalités principales**
 
- Formulaire de réservation complet (date, créneau, type, options)  
- Enregistrement des données en base via PDO  
- Modification possible jusqu’à **48h avant le match**  
- Affichage **asynchrone** des disponibilités via **AJAX**  
- Génération automatique de **factures PDF**  
- Gestion des **tournois** et des **services optionnels**  
- Interface **administrateur sécurisée**  
- Envoi d’**e-mails de confirmation** aux utilisateurs  
+ - Formulaire de réservation complet (date, créneau, type, options)  
+ - Enregistrement des données en base via PDO  
+ - Modification possible jusqu’à **48h avant le match**  
+ - Affichage **asynchrone** des disponibilités via **AJAX**  
+ - Génération automatique de **factures PDF**  
+ - Gestion des **tournois** et des **services optionnels**  
+ - Interface **administrateur sécurisée**  
+ - Envoi d’**e-mails de confirmation** aux utilisateurs  
 
 ---
 
-## 💾 Base de données
+## Base de données
 
 **Nom :** `foot_fields`
 
@@ -161,7 +155,7 @@ Développer une application web permettant la **gestion complète des réservati
 
 ---
 
-## 🔐 Sécurité & Bonnes pratiques
+## Sécurité & Bonnes pratiques
 
 -  Requêtes préparées (`PDO::prepare`)
 -  Nettoyage des entrées (`htmlspecialchars`, `filter_var`)
@@ -172,7 +166,7 @@ Développer une application web permettant la **gestion complète des réservati
 
 ---
 
-## 👨‍💻 Auteurs
+## Auteurs
 
 Projet réalisé par :
 - **Hariss Houssam**  
@@ -183,7 +177,7 @@ Projet réalisé par :
 
 **Filière :** Génie Informatique  
 **École :** École Nationale des Sciences Appliquées – Tétouan  
-📅 **Octobre 2025**
+**Octobre 2025**
 
 ---
 
