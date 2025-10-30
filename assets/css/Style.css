@@ -1,0 +1,146 @@
+:root{
+  --ft-bg:#0e3a33;            /* deep green background */
+  --ft-bg-soft:#11493f;       /* slightly lighter */
+  --ft-panel:#133f38;         /* panels */
+  --ft-accent:#2bd997;        /* mint accent */
+  --ft-text:#e7f6ef;          /* main text */
+  --ft-text-dim:#b5d5c7;      /* muted text */
+  --ft-border:#1b5a4f;
+  --ft-shadow: 0 8px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.02);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  color:var(--ft-text);
+  background: radial-gradient(1200px 600px at 60% -20%, #1b5a4f 0%, var(--ft-bg) 60%) fixed;
+}
+
+/* Top navigation bar */
+.ft-topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;
+  padding:12px 20px;
+  background: linear-gradient(180deg, #14483f 0%, #103e36 100%);
+  border-bottom:1px solid var(--ft-border);
+  box-shadow:var(--ft-shadow);
+}
+.ft-brand{display:flex;align-items:center;gap:12px}
+.ft-logo{
+  width:36px;height:36px;display:grid;place-items:center;
+  background:linear-gradient(135deg, #1f7a64, #0f4f45);
+  border:1px solid var(--ft-border);border-radius:10px;
+  box-shadow:var(--ft-shadow);
+}
+.ft-brand-title{font-weight:700}
+.ft-brand-sub{font-size:12px;color:var(--ft-text-dim)}
+.ft-actions{display:flex;gap:8px}
+.ft-icon-btn{
+  appearance:none;border:1px solid var(--ft-border);background:var(--ft-panel);
+  color:var(--ft-text);border-radius:10px;padding:8px 10px;cursor:pointer;
+  box-shadow:var(--ft-shadow)
+}
+.ft-icon-btn:hover{filter:brightness(1.05)}
+.ft-burger{display:none}
+
+/* Line icons */
+.ft-ic{width:20px;height:20px;stroke:var(--ft-text);fill:none;stroke-width:2;vector-effect:non-scaling-stroke}
+.ft-ic-lg{width:22px;height:22px}
+.ft-logo .ft-ic{width:22px;height:22px}
+
+/* Sidebar */
+.ft-sidebar{
+  position:fixed;left:0;top:60px;bottom:0;width:240px;
+  background:linear-gradient(180deg, #0f3a33, #0d302a);
+  border-right:1px solid var(--ft-border);
+  padding:18px 14px;overflow:auto;transform:translateX(0);transition:transform .25s ease;
+}
+.ft-sidebar-title{color:var(--ft-text-dim);font-weight:600;margin:6px 8px 12px}
+.ft-menu{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ft-menu a{
+  display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ft-text);
+  padding:10px 12px;border-radius:12px;border:1px solid transparent;
+}
+.ft-menu li.is-active a{background:rgba(43,217,151,.12);border-color:#1a6a58}
+.ft-menu a:hover{background:rgba(255,255,255,.04)}
+
+/* Main shell (empty center as requested) */
+.ft-shell{display:block;min-height:100vh}
+.ft-content{
+  margin-left:240px; /* space for sidebar */
+  padding:24px;
+  min-height:calc(100vh - 60px);
+  width:auto;
+}
+
+/* Footer */
+.ft-footer{
+  margin-left:240px;
+  position:sticky;bottom:0;z-index:40;
+  background:linear-gradient(180deg, #0f302a, #0e2924);
+  border-top:1px solid var(--ft-border);
+}
+.ft-footer-inner{
+  display:flex;gap:10px;align-items:center;justify-content:center;
+  padding:14px 20px;color:var(--ft-text-dim)
+}
+.ft-footer a{color:var(--ft-text);text-decoration:none}
+.ft-footer a:hover{text-decoration:underline}
+.ft-sep{opacity:.6}
+
+/* Responsive */
+@media (max-width: 900px){
+  .ft-burger{display:inline-flex;appearance:none;border:1px solid var(--ft-border);background:var(--ft-panel);color:var(--ft-text);border-radius:10px;padding:8px 10px}
+  .ft-sidebar{transform:translateX(-100%);top:56px}
+  .ft-sidebar.is-open{transform:translateX(0)}
+  .ft-shell{grid-template-columns:1fr}
+  .ft-content{margin-left:0}
+  .ft-footer{margin-left:0}
+}
+
+/* Mes réservations page */
+.ft-page{display:block;padding:24px;width:100%}
+.ft-page-header{margin:8px 0 20px}
+.ft-h1{margin:0 0 6px;font-size:34px}
+.ft-h2{margin:0 0 10px;font-size:22px}
+.ft-sub{color:var(--ft-text-dim);margin:0}
+.ft-muted{color:var(--ft-text-dim)}
+
+.ft-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:18px}
+.ft-card{background:var(--ft-panel);border:1px solid var(--ft-border);border-radius:16px;box-shadow:var(--ft-shadow)}
+.ft-stat{display:grid;grid-template-columns:60px 1fr;gap:12px;align-items:center;padding:16px}
+.ft-stat-icon{width:48px;height:48px;display:grid;place-items:center;background:rgba(43,217,151,.08);border:1px solid #1a6a58;border-radius:12px}
+.ft-stat-body .ft-stat-value{font-size:32px;font-weight:700}
+.ft-stat-label{color:var(--ft-text)}
+.ft-stat-sub{color:var(--ft-text-dim)}
+
+.ft-section-head{display:flex;align-items:center;justify-content:space-between;margin:14px 0}
+
+.ft-list{display:grid;gap:16px}
+.ft-booking{display:grid;grid-template-columns:1fr auto;gap:18px;padding:18px}
+.ft-title{margin:0 0 10px}
+.ft-badges{display:flex;gap:8px;margin-bottom:8px}
+.ft-badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(43,217,151,.15);color:var(--ft-text);border:1px solid #1a6a58;font-size:12px}
+.ft-meta{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ft-meta li{display:flex;align-items:center;gap:10px;color:var(--ft-text-dim)}
+.ft-price{font-size:28px;font-weight:700;margin-bottom:10px}
+.ft-actions-row{display:flex;gap:10px;margin-bottom:10px}
+
+.ft-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--ft-border);background:var(--ft-panel);color:var(--ft-text);cursor:pointer}
+.ft-btn:hover{filter:brightness(1.06)}
+.ft-btn-danger{border-color:#623b3b;background:linear-gradient(180deg,#3a1d1d,#2a1616)}
+
+.ft-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid var(--ft-border);background:rgba(255,255,255,.04);color:var(--ft-text)}
+.ft-chip-ok{border-color:#1a6a58;background:rgba(43,217,151,.12)}
+
+@media (max-width: 1200px){
+  .ft-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width: 900px){
+  .ft-page{max-width:100%}
+  .ft-stats{grid-template-columns:1fr}
+  .ft-booking{grid-template-columns:1fr}
+}
