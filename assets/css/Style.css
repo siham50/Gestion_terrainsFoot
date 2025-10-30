@@ -533,3 +533,71 @@ body{
   .ft-checkbox-list{grid-template-columns:1fr}
   .ft-content{padding:16px}
 }
+
+
+/* Auth pages (login/register/forgot) using global theme */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;padding:24px;background:linear-gradient(180deg,#14483f 0%, #103e36 100%);border-right:1px solid var(--ft-border);box-shadow:var(--ft-shadow)}
+.sidebar h1{margin:0 0 16px 0;font-size:22px}
+.sidebar a{display:block;color:var(--ft-text);text-decoration:none;padding:8px 0;border-radius:8px}
+.sidebar a:hover{filter:brightness(1.05)}
+
+.container{margin-left:260px;display:grid;place-items:center;min-height:100vh;padding:24px}
+.form-box{width:100%;max-width:380px;background:var(--ft-panel);border:1px solid var(--ft-border);border-radius:16px;box-shadow:var(--ft-shadow);padding:28px}
+.form-box h2{margin-top:0;margin-bottom:8px}
+.form-box p{margin-top:0;color:var(--ft-text-dim)}
+.form-box form{display:flex;flex-direction:column;gap:12px}
+.form-box input[type="email"],
+.form-box input[type="password"],
+.form-box input[type="text"],
+.form-box input[type="tel"]{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--ft-border);background:#0b2f29;color:var(--ft-text)}
+.form-box input:focus{outline:none;border-color:var(--ft-accent)}
+.form-box button{appearance:none;border:1px solid var(--ft-border);background:var(--ft-accent);color:#083328;font-weight:600;border-radius:10px;padding:10px 14px;cursor:pointer}
+.form-box button:hover{filter:brightness(1.02)}
+.form-box a{color:var(--ft-text-dim);text-decoration:none}
+.form-box a:visited{color:var(--ft-text-dim)}
+.form-box a:hover,.form-box a:focus{color:var(--ft-accent);text-decoration:underline;outline:none}
+
+/* Phone input (intl-tel-input) theming */
+.iti{width:100%}
+.iti__country-list{background-color:#0d1f1b !important;color:var(--ft-text) !important;border:1px solid var(--ft-border) !important;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.iti__country:hover{background-color:#1a2e28 !important}
+.iti__flag-container{z-index:2 !important}
+.iti__search-input{background:#0b2f29 !important;color:var(--ft-text) !important;border:1px solid var(--ft-border) !important}
+.iti__dial-code,.iti__country-name,.iti__selected-dial-code{color:var(--ft-text) !important}
+
+
+
+/* Mes réservations page */
+.ft-page{display:block;padding:24px;width:100%}
+.ft-page-header{margin:8px 0 20px}
+.ft-h1{margin:0 0 6px;font-size:34px}
+.ft-h2{margin:0 0 10px;font-size:22px}
+.ft-sub{color:var(--ft-text-dim);margin:0}
+.ft-muted{color:var(--ft-text-dim)}
+
+.ft-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:18px}
+.ft-card{background:var(--ft-panel);border:1px solid var(--ft-border);border-radius:16px;box-shadow:var(--ft-shadow)}
+.ft-stat{display:grid;grid-template-columns:60px 1fr;gap:12px;align-items:center;padding:16px}
+.ft-stat-icon{width:48px;height:48px;display:grid;place-items:center;background:rgba(43,217,151,.08);border:1px solid #1a6a58;border-radius:12px}
+.ft-stat-body .ft-stat-value{font-size:32px;font-weight:700}
+.ft-stat-label{color:var(--ft-text)}
+.ft-stat-sub{color:var(--ft-text-dim)}
+
+.ft-section-head{display:flex;align-items:center;justify-content:space-between;margin:14px 0}
+
+.ft-list{display:grid;gap:16px}
+.ft-booking{display:grid;grid-template-columns:1fr auto;gap:18px;padding:18px}
+.ft-title{margin:0 0 10px}
+.ft-badges{display:flex;gap:8px;margin-bottom:8px}
+.ft-badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(43,217,151,.15);color:var(--ft-text);border:1px solid #1a6a58;font-size:12px}
+.ft-meta{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ft-meta li{display:flex;align-items:center;gap:10px;color:var(--ft-text-dim)}
+.ft-price{font-size:28px;font-weight:700;margin-bottom:10px}
+.ft-actions-row{display:flex;gap:10px;margin-bottom:10px}
+
+.ft-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--ft-border);background:var(--ft-panel);color:var(--ft-text);cursor:pointer}
+.ft-btn:hover{filter:brightness(1.06)}
+.ft-btn-danger{border-color:#623b3b;background:linear-gradient(180deg,#3a1d1d,#2a1616)}
+
+.ft-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid var(--ft-border);background:rgba(255,255,255,.04);color:var(--ft-text)}
+.ft-chip-ok{border-color:#1a6a58;background:rgba(43,217,151,.12)}
