@@ -143,7 +143,8 @@
       </div>
       <div class="ft-booking-actions">
         <div class="ft-price">1000 MAD/heure</div>
-        <button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="1">Détails</button>
+        <div><button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="1">Détails</button>
+        <button class="ft-btn ft-btn-primary">Réserver</button></div>
       </div>
     </div>
     
@@ -161,7 +162,8 @@
       </div>
       <div class="ft-booking-actions">
         <div class="ft-price">800 MAD/heure</div>
-        <button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="2">Détails</button>
+        <div><button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="2">Détails</button>
+        <button class="ft-btn ft-btn-primary">Réserver</button></div>
       </div>
     </div>
         
@@ -178,7 +180,8 @@
       </div>
       <div class="ft-booking-actions">
         <div class="ft-price">900 MAD/heure</div>
-        <button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="3">Détails</button>
+        <div><button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="3">Détails</button>
+        <button class="ft-btn ft-btn-primary">Réserver</button></div>
       </div>
     </div>
     </section>
