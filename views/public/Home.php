@@ -132,55 +132,55 @@
       <div class="ft-list">
         <!-- Terrain 1 -->
         <div class="ft-card ft-booking">
-          <div class="ft-booking-content">
-            <h3 class="ft-title">Stade Municipal Centre-Ville</h3>
-            <div class="ft-badges">
-              <span class="ft-badge">Paris 15ème</span>
-              <span class="ft-badge">Foot à 5 • 10 joueurs</span>
-              <span class="ft-badge">Gazon synthétique</span>
-            </div>
-            <p class="ft-muted"><strong>12 créneaux disponibles</strong></p>
-          </div>
-          <div class="ft-booking-actions">
-            <div class="ft-price">45€/heure</div>
-            <button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="1">Détails</button>
-          </div>
+      <div class="ft-booking-content">
+        <h3 class="ft-title">Complexe Sportif Mohammed V</h3>
+        <div class="ft-badges">
+          <span class="ft-badge">Casablanca</span>
+          <span class="ft-badge">Foot à 11 • 22 joueurs</span>
+          <span class="ft-badge">Gazon naturel</span>
         </div>
+        <p class="ft-muted"><strong>15 créneaux disponibles</strong></p>
+      </div>
+      <div class="ft-booking-actions">
+        <div class="ft-price">1000 MAD/heure</div>
+        <button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="1">Détails</button>
+      </div>
+    </div>
+    
         
         <!-- Terrain 2 -->
         <div class="ft-card ft-booking">
-          <div class="ft-booking-content">
-            <h3 class="ft-title">Arena Sport Plus</h3>
-            <div class="ft-badges">
-              <span class="ft-badge">Lyon 3ème</span>
-              <span class="ft-badge">Foot à 7 • 14 joueurs</span>
-              <span class="ft-badge">Gazon naturel</span>
-            </div>
-            <p class="ft-muted"><strong>8 créneaux disponibles</strong></p>
-          </div>
-          <div class="ft-booking-actions">
-            <div class="ft-price">65€/heure</div>
-            <button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="2">Détails</button>
-          </div>
+      <div class="ft-booking-content">
+        <h3 class="ft-title">Stade Moulay Hassan</h3>
+        <div class="ft-badges">
+          <span class="ft-badge">Rabat</span>
+          <span class="ft-badge">Foot à 7 • 14 joueurs</span>
+          <span class="ft-badge">Gazon synthétique</span>
         </div>
+        <p class="ft-muted"><strong>10 créneaux disponibles</strong></p>
+      </div>
+      <div class="ft-booking-actions">
+        <div class="ft-price">800 MAD/heure</div>
+        <button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="2">Détails</button>
+      </div>
+    </div>
         
         <!-- Terrain 3 -->
         <div class="ft-card ft-booking">
-          <div class="ft-booking-content">
-            <h3 class="ft-title">Complex Sportif Bordeaux</h3>
-            <div class="ft-badges">
-              <span class="ft-badge">Bordeaux Centre</span>
-              <span class="ft-badge">Foot à 11 • 22 joueurs</span>
-              <span class="ft-badge">Gazon hybride</span>
-            </div>
-            <p class="ft-muted"><strong>5 créneaux disponibles</strong></p>
-          </div>
-          <div class="ft-booking-actions">
-            <div class="ft-price">120€/heure</div>
-            <button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="3">Détails</button>
-          </div>
+      <div class="ft-booking-content">
+        <h3 class="ft-title">Complexe Ibn Batouta</h3>
+        <div class="ft-badges">
+          <span class="ft-badge">Tanger</span>
+          <span class="ft-badge">Foot à 11 • 22 joueurs</span>
+          <span class="ft-badge">Gazon hybride</span>
         </div>
+        <p class="ft-muted"><strong>12 créneaux disponibles</strong></p>
       </div>
+      <div class="ft-booking-actions">
+        <div class="ft-price">900 MAD/heure</div>
+        <button class="ft-btn ft-btn-primary ft-details-btn" data-terrain="3">Détails</button>
+      </div>
+    </div>
     </section>
 
     <!-- Section Tournois à venir -->
@@ -193,99 +193,88 @@
       <div class="ft-list">
         <!-- Tournoi 1 -->
         <div class="ft-card ft-booking">
-          <div class="ft-booking-content">
-            <div class="ft-badges">
-              <span class="ft-badge ft-chip-ok">Inscriptions ouvertes</span>
-            </div>
-            <h3 class="ft-title">Coupe d'Été 2025</h3>
-            <ul class="ft-meta">
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                Foot à 7
-              </li>
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                15-17 Juillet 2025
-              </li>
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                Stade Jean Bouin, Paris
-              </li>
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                12/16 équipes inscrites
-              </li>
-            </ul>
-          </div>
-          <div class="ft-booking-actions">
-            <div class="ft-price">1500€</div>
-            <button class="ft-btn ft-btn-primary">Voir les détails</button>
-          </div>
-        </div>
+      <div class="ft-booking-content">
+        <h3 class="ft-title">Coupe d'été 2025</h3>
+        <ul class="ft-meta">
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Foot à 11
+          </li>
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            15-18 Août 2025
+          </li>
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Complexe Mohammed V, Casablanca
+          </li>
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            24/32 équipes inscrites
+          </li>
+        </ul>
+      </div>
+      <div class="ft-booking-actions">
+        <button class="ft-btn ft-btn-primary">Voir les détails</button>
+      </div>
+    </div>
         
         <!-- Tournoi 2 -->
-        <div class="ft-card ft-booking">
-          <div class="ft-booking-content">
-            <div class="ft-badges">
-              <span class="ft-badge">Complet</span>
-            </div>
-            <h3 class="ft-title">Ligue des Champions Amateur</h3>
-            <ul class="ft-meta">
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                Foot à 11
-              </li>
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                2-4 Août 2025
-              </li>
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                Parc OL, Lyon
-              </li>
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                8/8 équipes inscrites
-              </li>
-            </ul>
-          </div>
-          <div class="ft-booking-actions">
-            <div class="ft-price">3000€</div>
-            <button class="ft-btn ft-btn-primary">Voir les détails</button>
-          </div>
-        </div>
-        
+         <div class="ft-card ft-booking">
+      <div class="ft-booking-content">
+        <h3 class="ft-title">Championnat Ramadan</h3>
+        <ul class="ft-meta">
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Foot à 5
+          </li>
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            20-22 Juin 2025
+          </li>
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Moulay Hassan Sport Hall, Rabat
+          </li>
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            32/32 équipes inscrites
+          </li>
+        </ul>
+      </div>
+      <div class="ft-booking-actions">
+        <button class="ft-btn ft-btn-primary">Voir les détails</button>
+      </div>
+    </div>
+
         <!-- Tournoi 3 -->
         <div class="ft-card ft-booking">
-          <div class="ft-booking-content">
-            <div class="ft-badges">
-              <span class="ft-badge ft-chip-ok">En cours</span>
-            </div>
-            <h3 class="ft-title">Tournoi Express 5x5</h3>
-            <ul class="ft-meta">
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                Foot à 5
-              </li>
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                25-26 Octobre 2025
-              </li>
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                Arena Sport, Marseille
-              </li>
-              <li>
-                <svg class="ft-ic" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                6/8 équipes inscrites
-              </li>
-            </ul>
-          </div>
-          <div class="ft-booking-actions">
-            <div class="ft-price">800€</div>
-            <button class="ft-btn ft-btn-primary">Voir les détails</button>
-          </div>
-        </div>
+      <div class="ft-booking-content">
+        <h3 class="ft-title">Tournoi du nord 2025</h3>
+        <ul class="ft-meta">
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Foot à 11
+          </li>
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            8-10 Août 2025
+          </li>
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Complexe Ibn Batouta, Tanger
+          </li>
+          <li>
+            <svg class="ft-ic" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            12/16 équipes inscrites
+          </li>
+        </ul>
+      </div>
+      <div class="ft-booking-actions">
+        <button class="ft-btn ft-btn-primary">Voir les détails</button>
+      </div>
+    </div>
+           
       </div>
     </section>
   </div>
@@ -335,25 +324,28 @@ function openTerrainModal(terrainId) {
   // Simulation de données - en production, vous récupéreriez ces données depuis une API
   const terrains = {
     1: {
-      title: "Stade Municipal Centre-Ville",
-      description: "Terrain de football à 5 situé au cœur de Paris. Équipement de qualité professionnelle avec vestiaires modernes et éclairage LED.",
-      features: ["Vestiaires avec douches", "Éclairage LED", "Parking sécurisé", "Snack-bar"],
-      price: "45€/heure",
-      availability: "12 créneaux disponibles cette semaine"
+      title: "Complexe Sportif Mohammed V",
+      description: "Stade mythique de Casablanca, équipement de classe internationale avec des installations modernes. Idéal pour les compétitions et matchs officiels.",
+      features: ["Tribunes de 45,000 places", "Éclairage haute performance", "Vestiaires professionnels", "Parking sécurisé de 2,000 places", "Services médicaux"],
+      price: "1000 MAD/heure",
+      availability: "15 créneaux disponibles cette semaine",
+      location: "Casablanca"
     },
     2: {
-      title: "Arena Sport Plus",
-      description: "Terrain de football à 7 avec gazon naturel de haute qualité. Idéal pour les matchs amicaux et les entraînements.",
-      features: ["Gazon naturel entretenu", "Tribunes de 200 places", "Vestiaires spacieux", "Bar"],
-      price: "65€/heure",
-      availability: "8 créneaux disponibles cette semaine"
+      title: "Stade Moulay Hassan",
+      description: "Terrain de football à 7 situé au cœur de Rabat. Installation moderne avec gazon synthétique de dernière génération.",
+      features: ["Gazon synthétique professionnel", "Vestiaires avec douches", "Éclairage LED", "Snack-bar", "Parking gratuit"],
+      price: "800 MAD/heure",
+      availability: "10 créneaux disponibles cette semaine",
+      location: "Rabat"
     },
     3: {
-      title: "Complex Sportif Bordeaux",
-      description: "Grand terrain de football à 11 avec gazon hybride. Parfait pour les compétitions et tournois.",
-      features: ["Gazon hybride professionnel", "Éclairage haute performance", "Vestiaires équipés", "Parking de 200 places"],
-      price: "120€/heure",
-      availability: "5 créneaux disponibles cette semaine"
+      title: "Complexe Ibn Batouta",
+      description: "Grand complexe sportif à Tanger avec terrain hybride de haute qualité. Vue imprenable sur le détroit de Gibraltar.",
+      features: ["Gazon hybride professionnel", "Vestiaires premium", "Salle de fitness", "Cafétéria", "Parking surveillé"],
+      price: "900 MAD/heure",
+      availability: "12 créneaux disponibles cette semaine",
+      location: "Tanger"
     }
   };
   
