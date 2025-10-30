@@ -144,3 +144,33 @@ body{
   .ft-stats{grid-template-columns:1fr}
   .ft-booking{grid-template-columns:1fr}
 }
+
+/* Auth pages (login/register/forgot) using global theme */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;padding:24px;background:linear-gradient(180deg,#14483f 0%, #103e36 100%);border-right:1px solid var(--ft-border);box-shadow:var(--ft-shadow)}
+.sidebar h1{margin:0 0 16px 0;font-size:22px}
+.sidebar a{display:block;color:var(--ft-text);text-decoration:none;padding:8px 0;border-radius:8px}
+.sidebar a:hover{filter:brightness(1.05)}
+
+.container{margin-left:260px;display:grid;place-items:center;min-height:100vh;padding:24px}
+.form-box{width:100%;max-width:380px;background:var(--ft-panel);border:1px solid var(--ft-border);border-radius:16px;box-shadow:var(--ft-shadow);padding:28px}
+.form-box h2{margin-top:0;margin-bottom:8px}
+.form-box p{margin-top:0;color:var(--ft-text-dim)}
+.form-box form{display:flex;flex-direction:column;gap:12px}
+.form-box input[type="email"],
+.form-box input[type="password"],
+.form-box input[type="text"],
+.form-box input[type="tel"]{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--ft-border);background:#0b2f29;color:var(--ft-text)}
+.form-box input:focus{outline:none;border-color:var(--ft-accent)}
+.form-box button{appearance:none;border:1px solid var(--ft-border);background:var(--ft-accent);color:#083328;font-weight:600;border-radius:10px;padding:10px 14px;cursor:pointer}
+.form-box button:hover{filter:brightness(1.02)}
+.form-box a{color:var(--ft-text-dim);text-decoration:none}
+.form-box a:visited{color:var(--ft-text-dim)}
+.form-box a:hover,.form-box a:focus{color:var(--ft-accent);text-decoration:underline;outline:none}
+
+/* Phone input (intl-tel-input) theming */
+.iti{width:100%}
+.iti__country-list{background-color:#0d1f1b !important;color:var(--ft-text) !important;border:1px solid var(--ft-border) !important;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.iti__country:hover{background-color:#1a2e28 !important}
+.iti__flag-container{z-index:2 !important}
+.iti__search-input{background:#0b2f29 !important;color:var(--ft-text) !important;border:1px solid var(--ft-border) !important}
+.iti__dial-code,.iti__country-name,.iti__selected-dial-code{color:var(--ft-text) !important}

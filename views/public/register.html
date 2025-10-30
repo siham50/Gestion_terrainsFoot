@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Créer un compte | Nod Tasskhoun</title>
+  <link rel="stylesheet" href="../../assets/css/Style.css">
+  <style>.grecaptcha-badge{position:fixed!important;right:16px!important;bottom:16px!important;z-index:2147483647!important}</style>
+  <!-- CSS plugin téléphone -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.12.2/build/css/intlTelInput.css">
+  <style>
+    .register-container{width:100%;max-width:480px}
+    .login-link{margin-top:12px}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="form-box register-container">
+      <h2>Créer un compte</h2>
+      <p class="subtitle">Rejoignez Nod Tasskhoun aujourd'hui</p>
+
+      <?php if (!empty($message)) echo $message; ?>
+
+      <form method="POST" id="registerForm">
+        <input type="text" id="prenom" name="first_name" placeholder="Prénom" required>
+        <input type="text" id="nom" name="last_name" placeholder="Nom" required>
+        <input type="email" id="email" name="email" placeholder="Email" required>
+        <input type="tel" id="phone" name="phone" placeholder="Votre numéro de téléphone" required>
+        <input type="password" id="password" name="password" placeholder="Mot de passe" required>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmez le mot de passe" required>
+        <label><input type="checkbox" required> J'accepte les conditions d'utilisation</label>
+        <input type="hidden" name="submit" value="1">
+        <button type="submit" id="registerBtn">Créer mon compte</button>
+      </form>
+      <div class="login-link">
+        Vous avez déjà un compte ? <a href="login.html">Se connecter</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ JS plugin téléphone -->
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.12.2/build/js/intlTelInput.min.js"></script>
+
+<script>
+  const input = document.querySelector("#phone");
+  const iti = window.intlTelInput(input, {
+    initialCountry: "ma",
+    preferredCountries: ["ma", "fr", "us"],
+    separateDialCode: true,
+    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@25.12.2/build/js/utils.js",
+  });
+
+  // Validation en temps réel des mots de passe
+  const password = document.querySelector("#password");
+  const confirmPassword = document.querySelector("#confirm_password");
+  
+  function validatePasswords() {
+    if (confirmPassword.value && password.value !== confirmPassword.value) {
+      confirmPassword.style.borderColor = "#ff4444";
+      confirmPassword.style.borderWidth = "2px";
+    } else {
+      confirmPassword.style.borderColor = "";
+      confirmPassword.style.borderWidth = "";
+    }
+  }
+  
+  password.addEventListener("input", validatePasswords);
+  confirmPassword.addEventListener("input", validatePasswords);
+
+  // Validation du formulaire
+  document.getElementById("registerForm").addEventListener("submit", function(e) {
+    // 1. Validation des mots de passe
+    if (password.value !== confirmPassword.value) {
+      e.preventDefault();
+      alert("❌ Les mots de passe ne correspondent pas !");
+      confirmPassword.focus();
+      return;
+    }
+
+    // 2. Validation et mise à jour du numéro de téléphone
+    const fullNumber = iti.getNumber();
+    if (fullNumber) {
+      input.value = fullNumber;
+    } else {
+      const phoneValue = input.value;
+      if (!phoneValue || phoneValue.length <= 5) {
+        e.preventDefault();
+        alert("❌ Veuillez entrer un numéro de téléphone valide !");
+        input.focus();
+        return;
+      }
+    }
+    
+    // Si tout est OK, le formulaire sera soumis naturellement
+  });
+</script>
+
+</body>
+</html>
+
