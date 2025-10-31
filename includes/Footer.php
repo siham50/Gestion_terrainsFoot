@@ -2,7 +2,7 @@
 ?>
 <footer class="ft-footer">
   <div class="ft-footer-inner">
-    <span>© <?php echo date('Y'); ?> FootTime</span>
+    <span>© <?php echo date('Y'); ?> FootFields</span>
     <span class="ft-sep">•</span>
     <a href="#">Confidentialité</a>
     <span class="ft-sep">•</span>
