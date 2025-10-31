@@ -1,10 +1,10 @@
 :root{
-  --ft-bg:#0e3a33;            /* deep green background */
-  --ft-bg-soft:#11493f;       /* slightly lighter */
-  --ft-panel:#133f38;         /* panels */
-  --ft-accent:#2bd997;        /* mint accent */
-  --ft-text:#e7f6ef;          /* main text */
-  --ft-text-dim:#b5d5c7;      /* muted text */
+  --ft-bg:#0e3a33;        
+  --ft-bg-soft:#11493f;   
+  --ft-panel:#133f38;     
+  --ft-accent:#2bd997;     
+  --ft-text:#e7f6ef;     
+  --ft-text-dim:#b5d5c7;  
   --ft-border:#1b5a4f;
   --ft-shadow: 0 8px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.02);
 }
@@ -16,9 +16,10 @@ body{
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
   color:var(--ft-text);
   background: radial-gradient(1200px 600px at 60% -20%, #1b5a4f 0%, var(--ft-bg) 60%) fixed;
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
-/* Top navigation bar */
 .ft-topbar{
   position:sticky;top:0;z-index:50;
   display:flex;align-items:center;justify-content:space-between;
@@ -46,12 +47,10 @@ body{
 .ft-icon-btn:hover{filter:brightness(1.05)}
 .ft-burger{display:none}
 
-/* Line icons */
 .ft-ic{width:20px;height:20px;stroke:var(--ft-text);fill:none;stroke-width:2;vector-effect:non-scaling-stroke}
 .ft-ic-lg{width:22px;height:22px}
 .ft-logo .ft-ic{width:22px;height:22px}
 
-/* Sidebar */
 .ft-sidebar{
   position:fixed;left:0;top:60px;bottom:0;width:240px;
   background:linear-gradient(180deg, #0f3a33, #0d302a);
@@ -67,16 +66,14 @@ body{
 .ft-menu li.is-active a{background:rgba(43,217,151,.12);border-color:#1a6a58}
 .ft-menu a:hover{background:rgba(255,255,255,.04)}
 
-/* Main shell (empty center as requested) */
 .ft-shell{display:block;min-height:100vh}
 .ft-content{
-  margin-left:240px; /* space for sidebar */
+  margin-left:240px;
   padding:24px;
   min-height:calc(100vh - 60px);
   width:auto;
 }
 
-/* Footer */
 .ft-footer{
   margin-left:240px;
   position:sticky;bottom:0;z-index:40;
@@ -91,7 +88,6 @@ body{
 .ft-footer a:hover{text-decoration:underline}
 .ft-sep{opacity:.6}
 
-/* Responsive */
 @media (max-width: 900px){
   .ft-burger{display:inline-flex;appearance:none;border:1px solid var(--ft-border);background:var(--ft-panel);color:var(--ft-text);border-radius:10px;padding:8px 10px}
   .ft-sidebar{transform:translateX(-100%);top:56px}
@@ -101,7 +97,6 @@ body{
   .ft-footer{margin-left:0}
 }
 
-/* Mes réservations page */
 .ft-page{display:block;padding:24px;width:100%}
 .ft-page-header{margin:8px 0 20px}
 .ft-h1{margin:0 0 6px;font-size:34px}
@@ -143,4 +138,66 @@ body{
   .ft-page{max-width:100%}
   .ft-stats{grid-template-columns:1fr}
   .ft-booking{grid-template-columns:1fr}
+}
+
+.page-header {
+    text-align: center;
+    padding: 2rem 0;
+    background: #06463d;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.page-header h1 {
+    color: #00e49b;
+    font-size: 2.2rem;
+    margin: 0;
+}
+
+.tournament-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 3rem;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.tournament-card {
+    background: #083f36;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tournament-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+.tournament-card h2 {
+    color: #00e49b;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.tournament-info {
+    font-size: 0.95rem;
+    color: #b8e0d6;
+    margin-bottom: 1rem;
+}
+
+.details-btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: #00e49b;
+    color: #083f36;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.details-btn:hover {
+    background: #00c48a;
 }
