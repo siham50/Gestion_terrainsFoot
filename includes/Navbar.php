@@ -43,31 +43,19 @@
 <aside class="ft-sidebar">
   <div class="ft-sidebar-title">Menu Principal</div>
   <ul class="ft-menu">
-<<<<<<< HEAD
     <li><a href="home.php">
-=======
-    <li class="<?php echo $currentPage === 'home' ? 'is-active' : ''; ?>"><a href="index.php?page=home">
->>>>>>> origin/main
       <svg class="ft-ic" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 11l9-7 9 7"/>
         <path d="M5 10v9h14v-9"/>
       </svg>
       Accueil</a></li>
-<<<<<<< HEAD
     <li><a href="MesReservations.php">
-=======
-    <li class="<?php echo $currentPage === 'reservations' ? 'is-active' : ''; ?>"><a href="index.php?page=reservations">
->>>>>>> origin/main
       <svg class="ft-ic" viewBox="0 0 24 24" aria-hidden="true">
         <rect x="3" y="4" width="18" height="18" rx="2"/>
         <path d="M8 2v4M16 2v4M3 10h18"/>
       </svg>
       Mes réservations</a></li>
-<<<<<<< HEAD
     <li><a href="MesTournois.php">
-=======
-    <li class="<?php echo $currentPage === 'tournois' ? 'is-active' : ''; ?>"><a href="index.php?page=tournois">
->>>>>>> origin/main
       <svg class="ft-ic" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M8 21h8"/>
         <path d="M12 17v4"/>
@@ -76,11 +64,7 @@
         <path d="M19 6h2a3 3 0 0 1-3 3"/>
       </svg>
       Tournois</a></li>
-<<<<<<< HEAD
     <li><a href="Newsletter.php">
-=======
-    <li class="<?php echo $currentPage === 'newsletter' ? 'is-active' : ''; ?>"><a href="index.php?page=newsletter">
->>>>>>> origin/main
       <svg class="ft-ic" viewBox="0 0 24 24" aria-hidden="true">
         <rect x="3" y="5" width="18" height="14" rx="2"/>
         <path d="M3 7l9 6 9-6"/>
@@ -88,7 +72,3 @@
       Newsletter</a></li>
   </ul>
 </aside>
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/main
