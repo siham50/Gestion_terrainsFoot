@@ -669,3 +669,28 @@ body{
 .details-btn:hover {
     background: #00c48a;
 }
+
+.ft-time-slots {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.ft-time-slots label {
+    display: block;
+    margin-bottom: 8px;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.ft-time-slots label:hover {
+    background-color: #f5f5f5;
+}
+
+.ft-filters-open {
+    display: block !important;
+}
+

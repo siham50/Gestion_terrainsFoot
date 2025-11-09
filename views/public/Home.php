@@ -20,7 +20,7 @@ $GLOBALS['contentDisplayed'] = true;
       <div class="ft-search-bar">
         <div class="ft-search-input">
           <svg class="ft-ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" placeholder="Rechercher un terrain, une ville...">
+          <input type="text" id="searchInput" placeholder="Rechercher par nom, taille (5x5, 7x7, 11x11) ou type (naturel, synthétique, hybride)...">
         </div>
         <button class="ft-btn ft-filter-btn" id="filterToggle">
           <svg class="ft-ic" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
@@ -36,18 +36,40 @@ $GLOBALS['contentDisplayed'] = true;
         <div class="ft-filter-group">
           <h3>Type de terrain</h3>
           <div class="ft-checkbox-list">
-            <label><input type="checkbox" value="Foot à 5"> Foot à 5 (5x5)</label>
-            <label><input type="checkbox" value="Foot à 7"> Foot à 7 (7x7)</label>
-            <label><input type="checkbox" value="Foot à 11"> Foot à 11 (11x11)</label>
+            <label><input type="checkbox" name="size" value="Foot à 5"> Foot à 5 (5x5)</label>
+            <label><input type="checkbox" name="size" value="Foot à 7"> Foot à 7 (7x7)</label>
+            <label><input type="checkbox" name="size" value="Foot à 11"> Foot à 11 (11x11)</label>
           </div>
         </div>
         
         <div class="ft-filter-group">
           <h3>Type de gazon</h3>
           <div class="ft-checkbox-list">
-            <label><input type="checkbox" value="Naturel"> Gazon naturel</label>
-            <label><input type="checkbox" value="Synthétique"> Gazon synthétique</label>
-            <label><input type="checkbox" value="Hybride"> Gazon hybride</label>
+            <label><input type="checkbox" name="type" value="Naturel"> Gazon naturel</label>
+            <label><input type="checkbox" name="type" value="Synthétique"> Gazon synthétique</label>
+            <label><input type="checkbox" name="type" value="Hybride"> Gazon hybride</label>
+          </div>
+        </div>
+
+        <!-- Nouvelle section Créneaux horaires -->
+        <div class="ft-filter-group">
+          <h3>Créneaux horaires disponibles</h3>
+          <div class="ft-checkbox-list ft-time-slots">
+            <label><input type="checkbox" name="time" value="08:00-09:00"> 08:00 - 09:00</label>
+            <label><input type="checkbox" name="time" value="09:00-10:00"> 09:00 - 10:00</label>
+            <label><input type="checkbox" name="time" value="10:00-11:00"> 10:00 - 11:00</label>
+            <label><input type="checkbox" name="time" value="11:00-12:00"> 11:00 - 12:00</label>
+            <label><input type="checkbox" name="time" value="12:00-13:00"> 12:00 - 13:00</label>
+            <label><input type="checkbox" name="time" value="13:00-14:00"> 13:00 - 14:00</label>
+            <label><input type="checkbox" name="time" value="14:00-15:00"> 14:00 - 15:00</label>
+            <label><input type="checkbox" name="time" value="15:00-16:00"> 15:00 - 16:00</label>
+            <label><input type="checkbox" name="time" value="16:00-17:00"> 16:00 - 17:00</label>
+            <label><input type="checkbox" name="time" value="17:00-18:00"> 17:00 - 18:00</label>
+            <label><input type="checkbox" name="time" value="18:00-19:00"> 18:00 - 19:00</label>
+            <label><input type="checkbox" name="time" value="19:00-20:00"> 19:00 - 20:00</label>
+            <label><input type="checkbox" name="time" value="20:00-21:00"> 20:00 - 21:00</label>
+            <label><input type="checkbox" name="time" value="21:00-22:00"> 21:00 - 22:00</label>
+            <label><input type="checkbox" name="time" value="22:00-23:00"> 22:00 - 23:00</label>
           </div>
         </div>
         
@@ -71,7 +93,6 @@ $GLOBALS['contentDisplayed'] = true;
           <div class="ft-stat-body">
             <div class="ft-stat-value" id="totalTerrains">0</div>
             <div class="ft-stat-label">Terrains total</div>
-            <div class="ft-stat-sub" id="terrainsUpdate">Mise à jour...</div>
           </div>
         </div>
         
@@ -82,7 +103,6 @@ $GLOBALS['contentDisplayed'] = true;
           <div class="ft-stat-body">
             <div class="ft-stat-value" id="terrainsDisponibles">0</div>
             <div class="ft-stat-label">Terrains disponibles</div>
-            <div class="ft-stat-sub" id="disponiblesUpdate">Mise à jour...</div>
           </div>
         </div>
         
@@ -93,7 +113,6 @@ $GLOBALS['contentDisplayed'] = true;
           <div class="ft-stat-body">
             <div class="ft-stat-value" id="creneauxDisponibles">0</div>
             <div class="ft-stat-label">Créneaux disponibles</div>
-            <div class="ft-stat-sub" id="creneauxUpdate">Mise à jour...</div>
           </div>
         </div>
       </div>
@@ -145,7 +164,7 @@ $GLOBALS['contentDisplayed'] = true;
 <script>
 // Configuration AJAX - CHEMIN CORRECT
 const AJAX_CONFIG = {
-    updateInterval: 1000,
+    updateInterval: 2000,  // Mise à jour toutes les 2 secondes
     controllerUrl: '/Gestion_terrainsFoot/index.php?action=get_terrains_data'  // CHEMIN COMPLET
 };
 
@@ -153,6 +172,48 @@ const AJAX_CONFIG = {
 let terrainsData = {
     disponibles: [],
     indisponibles: []
+};
+
+// Filtres actuels
+let currentFilters = {
+    search: '',
+    sizes: [],
+    types: [],
+    times: []
+};
+
+// Mappings pour la recherche
+const searchMappings = {
+    // Taille du terrain
+    '5x5': 'Foot à 5',
+    '5': 'Foot à 5',
+    'foot à 5': 'Foot à 5',
+    'foot a 5': 'Foot à 5',
+    
+    '7x7': 'Foot à 7',
+    '7': 'Foot à 7',
+    'foot à 7': 'Foot à 7',
+    'foot a 7': 'Foot à 7',
+    
+    '11x11': 'Foot à 11',
+    '11': 'Foot à 11',
+    'foot à 11': 'Foot à 11',
+    'foot a 11': 'Foot à 11',
+    
+    // Type de gazon
+    'naturel': 'Naturel',
+    'gazon naturel': 'Naturel',
+    'natural': 'Naturel',
+    
+    'synthétique': 'Synthétique',
+    'synthétique': 'Synthétique',
+    'synthétique': 'Synthétique',
+    'gazon synthétique': 'Synthétique',
+    'synthetic': 'Synthétique',
+    
+    'hybride': 'Hybride',
+    'gazon hybride': 'Hybride',
+    'hybrid': 'Hybride'
 };
 
 // Initialisation
@@ -172,6 +233,27 @@ function initEventListeners() {
         filterToggle.addEventListener('click', function() {
             const panel = document.getElementById('filtersPanel');
             panel.classList.toggle('ft-filters-open');
+        });
+    }
+
+    // Recherche en temps réel
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentFilters.search = this.value.trim();
+                applyFilters();
+            }, 300); // Délai de 300ms après la fin de la frappe
+        });
+
+        // Recherche par Entrée
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                currentFilters.search = this.value.trim();
+                applyFilters();
+            }
         });
     }
 
@@ -198,12 +280,12 @@ function initEventListeners() {
     });
 }
 
-// Charger les données des terrains via AJAX - VERSION SIMPLIFIÉE
+// Charger les données des terrains via AJAX
 function loadTerrainsData() {
     console.log('Chargement des données...');
     
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/Gestion_terrainsFoot/index.php?action=get_terrains_data', true); // CHEMIN DIRECT
+    xhr.open('GET', '/Gestion_terrainsFoot/index.php?action=get_terrains_data', true);
     
     xhr.onreadystatechange = function() {
         console.log('État XHR:', xhr.readyState, 'Statut:', xhr.status);
@@ -216,7 +298,8 @@ function loadTerrainsData() {
                     
                     if (response.success) {
                         console.log('Données chargées avec succès');
-                        updateTerrainsUI(response.data);
+                        terrainsData = response.data;
+                        applyFilters(); // Appliquer les filtres après chargement
                     } else {
                         console.error('Erreur serveur:', response.message);
                         showError('Erreur: ' + response.message);
@@ -255,17 +338,79 @@ function showError(message) {
     });
 }
 
-// Mettre à jour l'interface utilisateur avec les données AJAX
-function updateTerrainsUI(data) {
-    console.log('Mise à jour UI - Disponibles:', data.disponibles?.length, 'Indisponibles:', data.indisponibles?.length);
+// Appliquer les filtres
+function applyFilters() {
+    console.log('Application des filtres:', currentFilters);
     
-    terrainsData = data;
-    updateTerrainsList('disponibles', data.disponibles || []);
-    updateTerrainsList('indisponibles', data.indisponibles || []);
-    updateStats();
+    const filteredDisponibles = filterTerrains(terrainsData.disponibles || []);
+    const filteredIndisponibles = filterTerrains(terrainsData.indisponibles || []);
+    
+    updateTerrainsList('disponibles', filteredDisponibles);
+    updateTerrainsList('indisponibles', filteredIndisponibles);
+    updateStats(filteredDisponibles, filteredIndisponibles);
 }
 
-// Mettre à jour la liste des terrains
+// Filtrer les terrains selon les critères
+function filterTerrains(terrains) {
+    return terrains.filter(terrain => {
+        // Filtre de recherche texte
+        if (currentFilters.search) {
+            const searchTerm = currentFilters.search.toLowerCase();
+            const normalizedSearch = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            
+            // Recherche dans le nom du terrain
+            const nomMatch = terrain.nom && 
+                terrain.nom.toLowerCase().includes(searchTerm);
+            
+            // Recherche dans la taille du terrain
+            const tailleMatch = terrain.taille && 
+                terrain.taille.toLowerCase().includes(searchTerm);
+            
+            // Recherche dans le type de gazon
+            const typeMatch = terrain.type && 
+                terrain.type.toLowerCase().includes(searchTerm);
+            
+            // Recherche intelligente avec mappings
+            const mappedSearch = searchMappings[searchTerm.toLowerCase()];
+            const mappedMatch = mappedSearch && (
+                (terrain.taille && terrain.taille.toLowerCase().includes(mappedSearch.toLowerCase())) ||
+                (terrain.type && terrain.type.toLowerCase().includes(mappedSearch.toLowerCase()))
+            );
+
+            // Recherche par formats courants
+            const formatMatch = 
+                (searchTerm === '5x5' && terrain.taille === 'Foot à 5') ||
+                (searchTerm === '7x7' && terrain.taille === 'Foot à 7') ||
+                (searchTerm === '11x11' && terrain.taille === 'Foot à 11') ||
+                (searchTerm === '5' && terrain.taille === 'Foot à 5') ||
+                (searchTerm === '7' && terrain.taille === 'Foot à 7') ||
+                (searchTerm === '11' && terrain.taille === 'Foot à 11');
+
+            if (!nomMatch && !tailleMatch && !typeMatch && !mappedMatch && !formatMatch) {
+                return false;
+            }
+        }
+        
+        // Filtre par taille (cases à cocher)
+        if (currentFilters.sizes.length > 0) {
+            if (!currentFilters.sizes.includes(terrain.taille)) return false;
+        }
+        
+        // Filtre par type de gazon (cases à cocher)
+        if (currentFilters.types.length > 0) {
+            if (!currentFilters.types.includes(terrain.type)) return false;
+        }
+        
+        // Filtre par créneaux horaires
+        if (currentFilters.times.length > 0) {
+            if (!terrain.disponible || (terrain.creneaux_disponibles || 0) === 0) return false;
+        }
+        
+        return true;
+    });
+}
+
+// Mettre à jour l'interface utilisateur avec les données filtrées
 function updateTerrainsList(type, terrains) {
     const container = document.getElementById(`terrains-${type}-list`);
     
@@ -277,7 +422,10 @@ function updateTerrainsList(type, terrains) {
     console.log(`Mise à jour ${type}:`, terrains.length, 'terrains');
     
     if (terrains.length === 0) {
-        container.innerHTML = '<div class="ft-no-data">Aucun terrain ' + type + '</div>';
+        const searchMessage = currentFilters.search ? 
+            `Aucun terrain ${type} correspondant à "${currentFilters.search}"` :
+            `Aucun terrain ${type}`;
+        container.innerHTML = `<div class="ft-no-data">${searchMessage}</div>`;
         return;
     }
     
@@ -323,9 +471,9 @@ function updateTerrainsList(type, terrains) {
 }
 
 // Mettre à jour les statistiques
-function updateStats() {
-    const total = (terrainsData.disponibles?.length || 0) + (terrainsData.indisponibles?.length || 0);
-    const creneauxTotal = (terrainsData.disponibles || []).reduce((sum, terrain) => 
+function updateStats(disponibles, indisponibles) {
+    const total = (disponibles?.length || 0) + (indisponibles?.length || 0);
+    const creneauxTotal = (disponibles || []).reduce((sum, terrain) => 
         sum + (parseInt(terrain.creneaux_disponibles) || 0), 0);
     
     // Mettre à jour les éléments DOM
@@ -334,7 +482,7 @@ function updateStats() {
     const creneauxElem = document.getElementById('creneauxDisponibles');
     
     if (totalElem) totalElem.textContent = total;
-    if (dispoElem) dispoElem.textContent = terrainsData.disponibles?.length || 0;
+    if (dispoElem) dispoElem.textContent = disponibles?.length || 0;
     if (creneauxElem) creneauxElem.textContent = creneauxTotal;
     
     const now = new Date();
@@ -343,7 +491,7 @@ function updateStats() {
         updateElem.textContent = `Mis à jour: ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
     }
     
-    console.log('Stats mises à jour - Total:', total, 'Disponibles:', terrainsData.disponibles?.length, 'Créneaux:', creneauxTotal);
+    console.log('Stats mises à jour - Total:', total, 'Disponibles:', disponibles?.length, 'Créneaux:', creneauxTotal);
 }
 
 // Générer les badges du terrain
@@ -407,22 +555,50 @@ function reserverTerrain(terrainId) {
     window.location.href = 'index.php?page=reservation&terrain=' + terrainId;
 }
 
-// Appliquer les filtres
+// Appliquer les filtres depuis le bouton
 function applyFiltersFunction() {
-    const selectedSizes = Array.from(document.querySelectorAll('input[value^="Foot à"]:checked'))
+    // Récupérer les valeurs des cases à cocher
+    currentFilters.sizes = Array.from(document.querySelectorAll('input[name="size"]:checked'))
         .map(cb => cb.value);
-    const selectedTypes = Array.from(document.querySelectorAll('input[value$="l"]:checked'))
+    currentFilters.types = Array.from(document.querySelectorAll('input[name="type"]:checked'))
+        .map(cb => cb.value);
+    currentFilters.times = Array.from(document.querySelectorAll('input[name="time"]:checked'))
         .map(cb => cb.value);
     
-    console.log('Filtres appliqués:', { selectedSizes, selectedTypes });
-    // Implémentation avancée des filtres
+    console.log('Filtres appliqués:', currentFilters);
+    
+    // Fermer le panneau des filtres
+    document.getElementById('filtersPanel').classList.remove('ft-filters-open');
+    
+    // Appliquer les filtres
+    applyFilters();
 }
 
 // Réinitialiser les filtres
 function resetFiltersFunction() {
+    // Réinitialiser les cases à cocher
     document.querySelectorAll('#filtersPanel input[type="checkbox"]').forEach(checkbox => {
         checkbox.checked = false;
     });
+    
+    // Réinitialiser la recherche
+    document.getElementById('searchInput').value = '';
+    
+    // Réinitialiser les filtres en mémoire
+    currentFilters = {
+        search: '',
+        sizes: [],
+        types: [],
+        times: []
+    };
+    
+    // Fermer le panneau des filtres
+    document.getElementById('filtersPanel').classList.remove('ft-filters-open');
+    
+    // Appliquer les filtres (qui seront vides)
+    applyFilters();
+    
+    console.log('Filtres réinitialisés');
 }
 
 // Démarrer les mises à jour automatiques
