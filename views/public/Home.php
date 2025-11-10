@@ -189,7 +189,7 @@ if ($reservationFeedback !== null) {
       <button class="ft-modal-close" id="reservationModalClose">&times;</button>
     </div>
     <div class="ft-modal-body">
-      <form id="reservationForm" action="/Gestion_terrainsFoot - Copy/controllers/ReservationController.php" method="POST">
+      <form id="reservationForm" action="../../controllers/ReservationController.php" method="POST">
         <input type="hidden" id="resTerrainId" name="idTerrain">
 
         <div class="ft-form-grid">

@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $controller->createReservation();
     
     // Rediriger vers la page d'accueil
-    header('Location: /Gestion_terrainsFoot - Copy/views/public/Home.php');
+    header('Location: /Gestion_terrainsFoot/views/public/Home.php');
     exit;
 }
 
