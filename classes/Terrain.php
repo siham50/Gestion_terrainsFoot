@@ -48,7 +48,7 @@ public function readDisponibles() {
                   LEFT JOIN prix p ON t.taille = p.categorie 
                   WHERE t.disponible = 1 
                     AND (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) < 12
-                  ORDER BY t.idTerrain DESC";  // ← Tri par date de modification
+                  ORDER BY t.date_modification DESC, t.idTerrain DESC";  // ← Tri par date de modification
         
 
         $stmt = $this->conn->prepare($query);
