@@ -669,3 +669,89 @@ body{
 .details-btn:hover {
     background: #00c48a;
 }
+
+.ft-time-slots {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.ft-time-slots label {
+    display: block;
+    margin-bottom: 8px;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.ft-time-slots label:hover {
+    background-color: #f5f5f5;
+}
+
+.ft-filters-open {
+    display: block !important;
+}
+
+/* Reservation modal - larger typography and spacing */
+#reservationModal .ft-modal-content{
+  max-width: 760px;
+}
+#reservationModal .ft-modal-header h2{
+  font-size: 24px;
+}
+#reservationModal .ft-modal-body{
+  padding: 28px;
+  font-size: 16px;
+}
+#reservationModal .ft-form-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+#reservationModal .ft-form-group label{
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--ft-text);
+}
+#reservationModal .ft-input,
+#reservationModal select,
+#reservationModal textarea{
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--ft-border);
+  background: var(--ft-panel);
+  color: var(--ft-text);
+  font-size: 16px;
+}
+#reservationModal textarea{
+  min-height: 120px;
+}
+#reservationModal .ft-checkbox-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px 16px;
+}
+#reservationModal .ft-checkbox-list label{
+  font-size: 16px;
+  color: var(--ft-text-dim);
+  gap: 10px;
+}
+#reservationModal .ft-modal-actions{
+  margin-top: 24px;
+  gap: 12px;
+}
+#reservationModal .ft-btn{
+  padding: 12px 18px;
+  font-size: 15px;
+  border-radius: 12px;
+}
+@media (max-width: 700px){
+  #reservationModal .ft-form-grid{
+    grid-template-columns: 1fr;
+  }
+}
