@@ -296,6 +296,97 @@
   </div>
 </div>
 
+<!-- Modal de réservation -->
+<div class="ft-modal" id="reservationModal">
+  <div class="ft-modal-content">
+    <div class="ft-modal-header">
+      <h2 id="reservationModalTitle">Réserver un terrain</h2>
+      <button class="ft-modal-close" id="reservationModalClose">&times;</button>
+    </div>
+    <div class="ft-modal-body">
+      <form id="reservationForm" action="../../controllers/ReservationController.php" method="POST">
+        <input type="hidden" id="resTerrainId" name="idTerrain">
+
+        <div class="ft-form-grid">
+          <!-- Informations terrain sélectionné -->
+          <div class="ft-form-group">
+            <label>Terrain sélectionné</label>
+            <input type="text" id="resTerrainName" class="ft-input" disabled>
+          </div>
+
+          <!-- Date de réservation -->
+          <div class="ft-form-group">
+            <label for="dateReservation">Date de réservation</label>
+            <input type="date" id="dateReservation" name="dateReservation" class="ft-input" required>
+          </div>
+
+          <!-- Créneau horaire -->
+          <div class="ft-form-group">
+            <label for="idCreneau">Créneau horaire</label>
+            <select id="idCreneau" name="idCreneau" class="ft-input" required>
+              <option value="">-- Sélectionner --</option>
+              <option value="1">08:00 - 09:00</option>
+              <option value="2">09:00 - 10:00</option>
+              <option value="3">10:00 - 11:00</option>
+              <option value="4">11:00 - 12:00</option>
+              <option value="5">12:00 - 13:00</option>
+              <option value="6">13:00 - 14:00</option>
+              <option value="7">14:00 - 15:00</option>
+              <option value="8">15:00 - 16:00</option>
+              <option value="9">16:00 - 17:00</option>
+              <option value="10">17:00 - 18:00</option>
+              <option value="11">18:00 - 19:00</option>
+              <option value="12">19:00 - 20:00</option>
+              <option value="13">20:00 - 21:00</option>
+              <option value="14">21:00 - 22:00</option>
+              <option value="15">22:00 - 23:00</option>
+            </select>
+          </div>
+
+          <!-- Taille de terrain (préremplie et non modifiable) -->
+          <div class="ft-form-group">
+            <label>Taille du terrain</label>
+            <input type="hidden" id="resTaille" name="taille">
+            <input type="text" id="resTailleDisplay" class="ft-input" disabled>
+          </div>
+
+          <!-- Type de terrain (prérempli et non modifiable) -->
+          <div class="ft-form-group">
+            <label>Type de terrain</label>
+            <input type="hidden" id="resType" name="type">
+            <input type="text" id="resTypeDisplay" class="ft-input" disabled>
+          </div>
+
+          <!-- Options supplémentaires -->
+          <div class="ft-form-group">
+            <label>Options supplémentaires</label>
+            <div class="ft-checkbox-list">
+              <label><input type="checkbox" id="ballon" name="ballon" value="1"> Ballon</label>
+              <label><input type="checkbox" id="arbitre" name="arbitre" value="1"> Arbitre</label>
+              <label><input type="checkbox" id="maillot" name="maillot" value="1"> Maillots</label>
+              <label><input type="checkbox" id="douche" name="douche" value="1"> Douche</label>
+            </div>
+          </div>
+
+          <!-- Informations du client -->
+          <!-- (Supprimé: les informations utilisateur sont déjà connues via la session) -->
+
+          <!-- Demande spécifique -->
+          <div class="ft-form-group" style="grid-column: 1 / -1;">
+            <label for="demande">Demande spécifique</label>
+            <textarea id="demande" name="demande" class="ft-input" rows="4" placeholder="Commentaires ou requêtes spécifiques..."></textarea>
+          </div>
+        </div>
+
+        <div class="ft-modal-actions">
+          <button type="button" class="ft-btn ft-btn-secondary" id="reservationCancelBtn">Annuler</button>
+          <button type="submit" class="ft-btn ft-btn-primary">Confirmer la réservation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <?php require __DIR__ . '/../../includes/Footer.php'; ?>
 
 <script>
