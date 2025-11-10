@@ -43,7 +43,7 @@
 <aside class="ft-sidebar">
   <div class="ft-sidebar-title">Menu Principal</div>
   <ul class="ft-menu">
-    <li><a href="home.php">
+    <li><a href="Home.php">
       <svg class="ft-ic" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M3 11l9-7 9 7"/>
         <path d="M5 10v9h14v-9"/>

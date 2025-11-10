@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "foot_projet";
+$dbname = "foot_fields";
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 

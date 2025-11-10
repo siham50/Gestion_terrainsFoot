@@ -165,7 +165,7 @@ $GLOBALS['contentDisplayed'] = true;
 // Configuration AJAX - CHEMIN CORRECT
 const AJAX_CONFIG = {
     updateInterval: 2000,  // Mise à jour toutes les 2 secondes
-    controllerUrl: '/Gestion_terrainsFoot/index.php?action=get_terrains_data'  // CHEMIN COMPLET
+    controllerUrl: '/Gestion_terrainsFoot/controllers/TerrainController.php?action=get_terrains_data'  // CHEMIN COMPLET
 };
 
 // Données globales
@@ -285,7 +285,7 @@ function loadTerrainsData() {
     console.log('Chargement des données...');
     
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/Gestion_terrainsFoot/index.php?action=get_terrains_data', true);
+    xhr.open('GET', '/Gestion_terrainsFoot/controllers/TerrainController.php?action=get_terrains_data', true);
     
     xhr.onreadystatechange = function() {
         console.log('État XHR:', xhr.readyState, 'Statut:', xhr.status);
@@ -552,7 +552,7 @@ function openTerrainModal(terrainId) {
 
 // Réserver un terrain
 function reserverTerrain(terrainId) {
-    window.location.href = 'index.php?page=reservation&terrain=' + terrainId;
+    window.location.href = 'ReservationForm.php?terrain=' + terrainId;
 }
 
 // Appliquer les filtres depuis le bouton
