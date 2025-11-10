@@ -1,6 +1,16 @@
 <?php
 // views/public/Home.php
 $GLOBALS['contentDisplayed'] = true;
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Afficher les messages de feedback de réservation
+$reservationFeedback = $_SESSION['reservation_feedback'] ?? null;
+if ($reservationFeedback !== null) {
+    unset($_SESSION['reservation_feedback']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -15,6 +25,18 @@ $GLOBALS['contentDisplayed'] = true;
 
 <main class="ft-shell">
   <div class="ft-content">
+    <?php if ($reservationFeedback): ?>
+      <div class="ft-alert <?php echo $reservationFeedback['success'] ? 'ft-alert-success' : 'ft-alert-error'; ?>" style="padding: 16px; margin-bottom: 20px; border-radius: 12px; border: 1px solid <?php echo $reservationFeedback['success'] ? '#1a6a58' : '#623b3b'; ?>; background: <?php echo $reservationFeedback['success'] ? 'rgba(43,217,151,.12)' : 'rgba(255,0,0,.1)'; ?>;">
+        <div style="font-weight: 600; margin-bottom: 8px;"><?php echo htmlspecialchars($reservationFeedback['message'], ENT_QUOTES, 'UTF-8'); ?></div>
+        <?php if (!$reservationFeedback['success'] && !empty($reservationFeedback['errors']) && is_array($reservationFeedback['errors'])): ?>
+          <ul style="margin: 8px 0 0 20px; padding: 0;">
+            <?php foreach ($reservationFeedback['errors'] as $error): ?>
+              <li><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></li>
+            <?php endforeach; ?>
+          </ul>
+        <?php endif; ?>
+      </div>
+    <?php endif; ?>
     <!-- Barre de recherche et filtres -->
     <div class="ft-search-section">
       <div class="ft-search-bar">
@@ -155,6 +177,97 @@ $GLOBALS['contentDisplayed'] = true;
     </div>
     <div class="ft-modal-body" id="modalBody">
       <!-- Contenu chargé dynamiquement -->
+    </div>
+  </div>
+</div>
+
+<!-- Modal de réservation -->
+<div class="ft-modal" id="reservationModal">
+  <div class="ft-modal-content">
+    <div class="ft-modal-header">
+      <h2 id="reservationModalTitle">Réserver un terrain</h2>
+      <button class="ft-modal-close" id="reservationModalClose">&times;</button>
+    </div>
+    <div class="ft-modal-body">
+      <form id="reservationForm" action="/Gestion_terrainsFoot - Copy/controllers/ReservationController.php" method="POST">
+        <input type="hidden" id="resTerrainId" name="idTerrain">
+
+        <div class="ft-form-grid">
+          <!-- Informations terrain sélectionné -->
+          <div class="ft-form-group">
+            <label>Terrain sélectionné</label>
+            <input type="text" id="resTerrainName" class="ft-input" disabled>
+          </div>
+
+          <!-- Date de réservation -->
+          <div class="ft-form-group">
+            <label for="dateReservation">Date de réservation</label>
+            <input type="date" id="dateReservation" name="dateReservation" class="ft-input" required>
+          </div>
+
+          <!-- Créneau horaire -->
+          <div class="ft-form-group">
+            <label for="idCreneau">Créneau horaire</label>
+            <select id="idCreneau" name="idCreneau" class="ft-input" required>
+              <option value="">-- Sélectionner --</option>
+              <option value="1">08:00 - 09:00</option>
+              <option value="2">09:00 - 10:00</option>
+              <option value="3">10:00 - 11:00</option>
+              <option value="4">11:00 - 12:00</option>
+              <option value="5">12:00 - 13:00</option>
+              <option value="6">13:00 - 14:00</option>
+              <option value="7">14:00 - 15:00</option>
+              <option value="8">15:00 - 16:00</option>
+              <option value="9">16:00 - 17:00</option>
+              <option value="10">17:00 - 18:00</option>
+              <option value="11">18:00 - 19:00</option>
+              <option value="12">19:00 - 20:00</option>
+              <option value="13">20:00 - 21:00</option>
+              <option value="14">21:00 - 22:00</option>
+              <option value="15">22:00 - 23:00</option>
+            </select>
+          </div>
+
+          <!-- Taille de terrain (préremplie et non modifiable) -->
+          <div class="ft-form-group">
+            <label>Taille du terrain</label>
+            <input type="hidden" id="resTaille" name="taille">
+            <input type="text" id="resTailleDisplay" class="ft-input" disabled>
+          </div>
+
+          <!-- Type de terrain (prérempli et non modifiable) -->
+          <div class="ft-form-group">
+            <label>Type de terrain</label>
+            <input type="hidden" id="resType" name="type">
+            <input type="text" id="resTypeDisplay" class="ft-input" disabled>
+          </div>
+
+          <!-- Options supplémentaires -->
+          <div class="ft-form-group">
+            <label>Options supplémentaires</label>
+            <div class="ft-checkbox-list">
+              <label><input type="checkbox" id="ballon" name="ballon" value="1"> Ballon</label>
+              <label><input type="checkbox" id="arbitre" name="arbitre" value="1"> Arbitre</label>
+              <label><input type="checkbox" id="maillot" name="maillot" value="1"> Maillots</label>
+              <label><input type="checkbox" id="douche" name="douche" value="1"> Douche</label>
+            </div>
+          </div>
+
+          <!-- Informations du client -->
+          <!-- (Supprimé: les informations utilisateur sont déjà connues via la session) -->
+
+          <!-- Demande spécifique -->
+          <div class="ft-form-group" style="grid-column: 1 / -1;">
+            <label for="demande">Demande spécifique</label>
+            <textarea id="demande" name="demande" class="ft-input" rows="4" placeholder="Commentaires ou requêtes spécifiques..."></textarea>
+          </div>
+        </div>
+
+        <div class="ft-modal-actions">
+          <button type="button" class="ft-btn ft-btn-secondary" id="reservationCancelBtn">Annuler</button>
+          <button type="submit" class="ft-btn ft-btn-primary">Confirmer la réservation</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -550,9 +663,31 @@ function openTerrainModal(terrainId) {
     modal.classList.add('ft-modal-open');
 }
 
-// Réserver un terrain
+// Réserver un terrain (ouvre le formulaire de réservation)
 function reserverTerrain(terrainId) {
-    window.location.href = 'ReservationForm.php?terrain=' + terrainId;
+    const terrain = [...(terrainsData.disponibles || []), ...(terrainsData.indisponibles || [])]
+        .find(t => t.idTerrain == terrainId);
+
+    // Préremplir les infos
+    document.getElementById('resTerrainId').value = terrainId;
+    document.getElementById('resTerrainName').value = terrain ? terrain.nom : ('Terrain #' + terrainId);
+    // Préremplir taille et type (lecture seule + valeurs cachées pour l'envoi)
+    const taille = terrain && terrain.taille ? terrain.taille : '';
+    const type = terrain && terrain.type ? terrain.type : '';
+    document.getElementById('resTaille').value = taille;
+    document.getElementById('resTailleDisplay').value = taille;
+    document.getElementById('resType').value = type;
+    document.getElementById('resTypeDisplay').value = type;
+
+    // Définir min (aujourd'hui) pour la date
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const dateInput = document.getElementById('dateReservation');
+    dateInput.min = `${yyyy}-${mm}-${dd}`;
+
+    document.getElementById('reservationModal').classList.add('ft-modal-open');
 }
 
 // Appliquer les filtres depuis le bouton
@@ -603,6 +738,21 @@ function resetFiltersFunction() {
 
 // Démarrer les mises à jour automatiques
 setInterval(loadTerrainsData, AJAX_CONFIG.updateInterval);
+
+// Gestion fermeture du modal réservation et soumission
+document.getElementById('reservationModalClose').addEventListener('click', function() {
+  document.getElementById('reservationModal').classList.remove('ft-modal-open');
+});
+document.getElementById('reservationCancelBtn').addEventListener('click', function() {
+  document.getElementById('reservationModal').classList.remove('ft-modal-open');
+});
+window.addEventListener('click', function(event) {
+  const modal = document.getElementById('reservationModal');
+  if (event.target === modal) modal.classList.remove('ft-modal-open');
+});
+
+// Le formulaire s'envoie normalement vers le serveur
+// Pas besoin de preventDefault - la soumission est gérée côté serveur
 </script>
 </body>
 </html>
