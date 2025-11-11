@@ -104,6 +104,9 @@ class TerrainController {
                 $id = $this->terrain->create();
                 
                 if ($id) {
+                    // Créer une notification pour le nouveau terrain
+                    $this->createTerrainNotification($_POST['nom'] ?? '', $_POST['type'] ?? '');
+                    
                     echo json_encode([
                         'success' => true,
                         'message' => 'Terrain ajouté avec succès',
@@ -213,6 +216,31 @@ public function updateDisponibilite() {
                 'success' => false,
                 'error' => $e->getMessage()
             ], JSON_PRETTY_PRINT);
+        }
+    }
+
+    /**
+     * Créer une notification pour un nouveau terrain
+     */
+    private function createTerrainNotification(string $nomTerrain, string $typeTerrain): void
+    {
+        require_once __DIR__ . '/../classes/Newsletter.php';
+        
+        try {
+            $newsletter = new Newsletter($this->conn);
+            
+            // Formater le type de terrain pour l'affichage
+            $typeFormatted = str_replace('_', ' ', $typeTerrain);
+            $typeFormatted = ucwords($typeFormatted);
+            
+            $titre = 'Nouveau terrain disponible : ' . $nomTerrain;
+            $message = 'Un nouveau terrain "' . $nomTerrain . '" (' . $typeFormatted . ') a été ajouté à notre complexe sportif. Réservez dès maintenant !';
+            
+            // Créer une notification globale (id_utilisateur = NULL)
+            $newsletter->createNotification('nouveau_terrain', $titre, $message, null);
+        } catch (Exception $e) {
+            // Logger l'erreur mais ne pas bloquer l'ajout du terrain
+            error_log('Erreur création notification terrain: ' . $e->getMessage());
         }
     }
 }

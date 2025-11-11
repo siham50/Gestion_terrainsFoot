@@ -9,11 +9,12 @@
     </div>
   </div>
   <nav class="ft-actions">
-    <button class="ft-icon-btn" aria-label="Notifications">
+    <button class="ft-icon-btn" aria-label="Notifications" onclick="window.location.href='Newsletter.php'" style="position: relative; cursor: pointer;">
       <svg class="ft-ic" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M6 8a6 6 0 0 1 12 0v4l1.5 2.5c.3.5 0 1.5-.8 1.5H5.3c-.8 0-1.1-1-.8-1.5L6 12V8"/>
         <path d="M9 18a3 3 0 0 0 6 0"/>
       </svg>
+      <span id="notificationBadge" class="ft-notification-badge" style="display: none;"></span>
     </button>
     <button class="ft-icon-btn" aria-label="Profil">
       <svg class="ft-ic" viewBox="0 0 24 24" aria-hidden="true">
@@ -36,6 +37,53 @@
         sidebar.classList.toggle('is-open');
       });
     }
+  })();
+  
+  // Mise à jour du badge de notification
+  (function(){
+    function updateNotificationBadge() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '../../controllers/NewsletterController.php?action=get_unread_count', true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          try {
+            var response = JSON.parse(xhr.responseText);
+            if (response.success) {
+              var count = response.count || 0;
+              var badge = document.getElementById('notificationBadge');
+              if (count > 0) {
+                if (!badge) {
+                  var notificationBtn = document.querySelector('.ft-icon-btn[aria-label="Notifications"]');
+                  if (notificationBtn) {
+                    badge = document.createElement('span');
+                    badge.id = 'notificationBadge';
+                    badge.className = 'ft-notification-badge';
+                    notificationBtn.appendChild(badge);
+                  }
+                }
+                if (badge) {
+                  badge.textContent = count > 99 ? '99+' : count;
+                  badge.style.display = 'block';
+                }
+              } else if (badge) {
+                badge.style.display = 'none';
+              }
+            }
+          } catch (e) {
+            console.error('Erreur badge:', e);
+          }
+        }
+      };
+      xhr.send();
+    }
+    
+    // Mettre à jour au chargement et toutes les 10 secondes
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateNotificationBadge);
+    } else {
+      updateNotificationBadge();
+    }
+    setInterval(updateNotificationBadge, 10000);
   })();
   </script>
 </header>

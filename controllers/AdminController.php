@@ -259,9 +259,42 @@ class AdminController
         $success = $stmt->execute();
         $stmt->close();
 
+        // Créer une notification pour le nouveau terrain
+        if ($success) {
+            $this->createTerrainNotification($data['nom'], $data['type']);
+        }
+
         return $success
             ? ['success' => true, 'message' => 'Terrain ajoute.']
             : ['success' => false, 'message' => 'Impossible d ajouter le terrain.'];
+    }
+
+    /**
+     * Créer une notification pour un nouveau terrain
+     */
+    private function createTerrainNotification(string $nomTerrain, string $typeTerrain): void
+    {
+        try {
+            // Formater le type de terrain pour l'affichage
+            $typeFormatted = str_replace('_', ' ', $typeTerrain);
+            $typeFormatted = ucwords($typeFormatted);
+            
+            $titre = 'Nouveau terrain disponible : ' . $nomTerrain;
+            $message = 'Un nouveau terrain "' . $nomTerrain . '" (' . $typeFormatted . ') a été ajouté à notre complexe sportif. Réservez dès maintenant !';
+            
+            // Créer une notification globale (id_utilisateur = NULL) avec mysqli
+            $sql = 'INSERT INTO newsletter (type, titre, message, id_utilisateur, date_creation, lu) VALUES (?, ?, ?, NULL, NOW(), 0)';
+            $stmt = $this->conn->prepare($sql);
+            if ($stmt instanceof mysqli_stmt) {
+                $type = 'nouveau_terrain';
+                $stmt->bind_param('sss', $type, $titre, $message);
+                $stmt->execute();
+                $stmt->close();
+            }
+        } catch (Exception $e) {
+            // Logger l'erreur mais ne pas bloquer l'ajout du terrain
+            error_log('Erreur création notification terrain: ' . $e->getMessage());
+        }
     }
 
     public function updateTerrain(int $id, array $data): array
