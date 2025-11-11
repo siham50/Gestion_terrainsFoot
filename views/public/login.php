@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION["user_name"] = $user['prenom'] . " " . $user['nom'];
                 
                 if ($user['role'] === 'admin') {
-                    header("Location: ../admin/dashboard.php");
+                    header("Location: ../admin/index.php");
                 } else {
                     header("Location: Home.php");
                 }
