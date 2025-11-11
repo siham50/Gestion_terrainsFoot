@@ -2,6 +2,7 @@
 // classes/Terrain.php
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/Prix.php';
 
 class Terrain {
     private $conn;
@@ -23,11 +24,9 @@ class Terrain {
     // Lire tous les terrains
     public function readAll() {
         $query = "SELECT t.*, 
-                         COUNT(r.idReservation) as reservations_count,
-                         p.prix as prix_heure
+                         COUNT(r.idReservation) as reservations_count
                   FROM " . $this->table_name . " t
                   LEFT JOIN reservation r ON t.idTerrain = r.idTerrain 
-                  LEFT JOIN prix p ON t.taille = p.categorie AND p.reference LIKE 'TERRAIN_%'
                   GROUP BY t.idTerrain
                   ORDER BY t.disponible DESC, t.nom ASC";
         
@@ -41,11 +40,9 @@ class Terrain {
 public function readDisponibles() {
     try {
         $query = "SELECT t.*, 
-                         p.prix as prix_heure,
                          (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) as reservations_aujourdhui,
                          (12 - (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE())) as creneaux_disponibles
                   FROM terrain t 
-                  LEFT JOIN prix p ON t.taille = p.categorie 
                   WHERE t.disponible = 1 
                     AND (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) < 12
                   ORDER BY t.date_modification DESC, t.idTerrain DESC";  // ← Tri par date de modification
@@ -66,11 +63,9 @@ public function readDisponibles() {
 public function readIndisponibles() {
     try {
         $query = "SELECT t.*, 
-                         p.prix as prix_heure,
                          (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) as reservations_aujourdhui,
                          (12 - (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE())) as creneaux_disponibles
                   FROM terrain t 
-                  LEFT JOIN prix p ON t.taille = p.categorie 
                   WHERE t.disponible = 0 
                      OR (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) >= 12
                   ORDER BY t.nom ASC";
@@ -132,28 +127,49 @@ public function readIndisponibles() {
         try {
             $disponibles = $this->readDisponibles();
             $indisponibles = $this->readIndisponibles();
-            
+
             $data = [
                 'disponibles' => [],
                 'indisponibles' => []
             ];
-            
-            // Vérifier si on a des données valides
+
+            $ids = [];
+
             if ($disponibles) {
                 while ($row = $disponibles->fetch(PDO::FETCH_ASSOC)) {
-                    // Assurer que creneaux_disponibles est au moins 0
                     $row['creneaux_disponibles'] = max(0, $row['creneaux_disponibles'] ?? 0);
                     $data['disponibles'][] = $row;
+                    $ids[] = $row['idTerrain'];
                 }
             }
-            
+
             if ($indisponibles) {
                 while ($row = $indisponibles->fetch(PDO::FETCH_ASSOC)) {
                     $row['creneaux_disponibles'] = max(0, $row['creneaux_disponibles'] ?? 0);
                     $data['indisponibles'][] = $row;
+                    $ids[] = $row['idTerrain'];
                 }
             }
-            
+
+            $prixModel = new Prix($this->conn);
+            $prixMap = $prixModel->getPrixForTerrains($ids);
+
+            foreach ($data['disponibles'] as &$terrain) {
+                $terrainId = $terrain['idTerrain'];
+                $prix = $prixMap[$terrainId] ?? null;
+                $terrain['prix_heure'] = $prix;
+                $terrain['prix'] = $prix;
+            }
+            unset($terrain);
+
+            foreach ($data['indisponibles'] as &$terrain) {
+                $terrainId = $terrain['idTerrain'];
+                $prix = $prixMap[$terrainId] ?? null;
+                $terrain['prix_heure'] = $prix;
+                $terrain['prix'] = $prix;
+            }
+            unset($terrain);
+
             return $data;
             
         } catch (Exception $e) {
@@ -168,13 +184,15 @@ public function readIndisponibles() {
     // NOUVELLE MÉTHODE : Test de connexion et données
     public function testConnection() {
         try {
+            $prixModel = new Prix($this->conn);
+
             $test = dbFetchOne("SELECT COUNT(*) as total FROM terrain");
-            $prix = dbFetchOne("SELECT COUNT(*) as total FROM prix");
+            $prixCount = $prixModel->countTerrainsAvecPrix();
             
             return [
                 'success' => true,
                 'terrains_count' => $test['total'],
-                'prix_count' => $prix['total'],
+                'prix_count' => $prixCount,
                 'terrains' => dbFetchAll("SELECT * FROM terrain LIMIT 5")
             ];
         } catch (Exception $e) {
