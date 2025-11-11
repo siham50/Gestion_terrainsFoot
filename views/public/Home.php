@@ -25,6 +25,9 @@ if ($reservationFeedback !== null) {
 
 <main class="ft-shell">
   <div class="ft-content">
+    <!-- Container pour les messages AJAX -->
+    <div id="ajaxFeedbackMessage" style="display: none;"></div>
+    
     <?php if ($reservationFeedback): ?>
       <div class="ft-alert <?php echo $reservationFeedback['success'] ? 'ft-alert-success' : 'ft-alert-error'; ?>" style="padding: 16px; margin-bottom: 20px; border-radius: 12px; border: 1px solid <?php echo $reservationFeedback['success'] ? '#1a6a58' : '#623b3b'; ?>; background: <?php echo $reservationFeedback['success'] ? 'rgba(43,217,151,.12)' : 'rgba(255,0,0,.1)'; ?>;">
         <div style="font-weight: 600; margin-bottom: 8px;"><?php echo htmlspecialchars($reservationFeedback['message'], ENT_QUOTES, 'UTF-8'); ?></div>
@@ -189,7 +192,7 @@ if ($reservationFeedback !== null) {
       <button class="ft-modal-close" id="reservationModalClose">&times;</button>
     </div>
     <div class="ft-modal-body">
-      <form id="reservationForm" action="../../controllers/ReservationController.php" method="POST">
+      <form id="reservationForm">
         <input type="hidden" id="resTerrainId" name="idTerrain">
 
         <div class="ft-form-grid">
@@ -559,7 +562,7 @@ function updateTerrainsList(type, terrains) {
                     ${creneauxText}
                 </div>
                 <div class="ft-booking-actions">
-                    <div class="ft-price">${terrain.prix_heure ? terrain.prix_heure + ' MAD/heure' : 'Prix non disponible'}</div>
+                    <div class="ft-price">${terrain.prix_heure ? parseFloat(terrain.prix_heure).toFixed(2).replace('.', ',') + ' MAD/heure' : 'Prix non disponible'}</div>
                     <div>
                         <button class="ft-btn ft-btn-primary ft-details-btn" 
                                 onclick="openTerrainModal(${terrain.idTerrain})">
@@ -646,7 +649,7 @@ function openTerrainModal(terrainId) {
             <li><strong>Type de gazon:</strong> ${terrain.type}</li>
             <li><strong>Statut:</strong> ${terrain.disponible ? 'Disponible' : 'Indisponible'}</li>
             <li><strong>Créneaux disponibles:</strong> ${terrain.creneaux_disponibles || 0}</li>
-            <li><strong>Prix:</strong> ${terrain.prix_heure ? terrain.prix_heure + ' MAD/heure' : 'Non spécifié'}</li>
+            <li><strong>Prix:</strong> ${terrain.prix_heure ? parseFloat(terrain.prix_heure).toFixed(2).replace('.', ',') + ' MAD/heure' : 'Non spécifié'}</li>
         </ul>
         <div class="ft-modal-actions">
             ${terrain.disponible && (terrain.creneaux_disponibles > 0) ? 
@@ -739,7 +742,7 @@ function resetFiltersFunction() {
 // Démarrer les mises à jour automatiques
 setInterval(loadTerrainsData, AJAX_CONFIG.updateInterval);
 
-// Gestion fermeture du modal réservation et soumission
+// Gestion fermeture du modal réservation
 document.getElementById('reservationModalClose').addEventListener('click', function() {
   document.getElementById('reservationModal').classList.remove('ft-modal-open');
 });
@@ -751,8 +754,116 @@ window.addEventListener('click', function(event) {
   if (event.target === modal) modal.classList.remove('ft-modal-open');
 });
 
-// Le formulaire s'envoie normalement vers le serveur
-// Pas besoin de preventDefault - la soumission est gérée côté serveur
+// Gestion de la soumission du formulaire de réservation via AJAX
+document.getElementById('reservationForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // Empêcher la soumission normale du formulaire
+  
+  const form = this;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalText = submitBtn.textContent;
+  
+  // Désactiver le bouton pendant le traitement
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Traitement...';
+  
+  // Récupérer les données du formulaire
+  const formData = new FormData(form);
+  
+  // Envoyer la requête AJAX
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '../../controllers/ReservationController.php?action=create', true);
+  
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+      
+      if (xhr.status === 200) {
+        try {
+          const response = JSON.parse(xhr.responseText);
+          
+          if (response.success) {
+            // Afficher le message de succès en haut de la page
+            showFeedbackMessage(response.message, true);
+            
+            // Fermer le modal
+            document.getElementById('reservationModal').classList.remove('ft-modal-open');
+            
+            // Réinitialiser le formulaire
+            form.reset();
+            
+            // Ne pas rediriger - la page MesReservations se mettra à jour automatiquement via AJAX
+          } else {
+            // Afficher les erreurs en haut de la page
+            showFeedbackMessage(response.message, false, response.errors || []);
+          }
+        } catch (e) {
+          console.error('Erreur parsing JSON:', e);
+          showFeedbackMessage('Erreur lors du traitement de la réponse du serveur', false);
+        }
+      } else {
+        showFeedbackMessage('Erreur de connexion au serveur (Code: ' + xhr.status + ')', false);
+      }
+    }
+  };
+  
+  xhr.onerror = function() {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+    showFeedbackMessage('Erreur réseau lors de l\'envoi de la réservation', false);
+  };
+  
+  xhr.send(formData);
+});
+
+// Fonction pour afficher les messages de feedback en haut de la page
+function showFeedbackMessage(message, isSuccess, errors = null) {
+  const feedbackContainer = document.getElementById('ajaxFeedbackMessage');
+  if (!feedbackContainer) return;
+  
+  // Créer le message avec le même style que l'ancien système
+  const alertClass = isSuccess ? 'ft-alert-success' : 'ft-alert-error';
+  const borderColor = isSuccess ? '#1a6a58' : '#623b3b';
+  const backgroundColor = isSuccess ? 'rgba(43,217,151,.12)' : 'rgba(255,0,0,.1)';
+  
+  let messageHtml = `
+    <div class="ft-alert ${alertClass}" style="padding: 16px; margin-bottom: 20px; border-radius: 12px; border: 1px solid ${borderColor}; background: ${backgroundColor};">
+      <div style="font-weight: 600; margin-bottom: 8px;">${escapeHtml(message)}</div>
+  `;
+  
+  // Ajouter les erreurs si présentes
+  if (!isSuccess && errors && errors.length > 0) {
+    messageHtml += '<ul style="margin: 8px 0 0 20px; padding: 0;">';
+    errors.forEach(error => {
+      messageHtml += `<li>${escapeHtml(error)}</li>`;
+    });
+    messageHtml += '</ul>';
+  }
+  
+  messageHtml += '</div>';
+  
+  // Afficher le message
+  feedbackContainer.innerHTML = messageHtml;
+  feedbackContainer.style.display = 'block';
+  
+  // Faire défiler vers le haut pour voir le message
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  // Masquer automatiquement après 5 secondes pour les messages de succès
+  if (isSuccess) {
+    setTimeout(() => {
+      feedbackContainer.style.display = 'none';
+      feedbackContainer.innerHTML = '';
+    }, 5000);
+  }
+}
+
+// Fonction utilitaire pour échapper le HTML
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
 </script>
 </body>
 </html>
