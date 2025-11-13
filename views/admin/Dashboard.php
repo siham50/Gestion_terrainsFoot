@@ -653,7 +653,7 @@ $todayLabel = date('d/m/Y');
                                     <?php
                                     $terrainId = (int) ($terrain['id'] ?? 0);
                                     $photoRelative = $terrain['photo'] ?? null;
-                                    $photoSrc = $photoRelative ? '../' . str_replace('\\', '/', ltrim($photoRelative, '/\\')) : null;
+                                    $photoSrc = $photoRelative ? '../../' . str_replace('\\', '/', ltrim($photoRelative, '/\\')) : null;
                                     $lastUpdate = $terrain['date_modification'] ?? null;
                                     $sizeKey = $terrain['taille'] ?? '';
                                     $sizeLabel = $tailleOptions[$sizeKey] ?? $sizeKey;

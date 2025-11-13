@@ -165,7 +165,7 @@ function getNotificationIcon($type) {
 
 <script>
 // Configuration AJAX
-const NEWSLETTER_UPDATE_INTERVAL = 5000; // Mise à jour toutes les 5 secondes
+const NEWSLETTER_UPDATE_INTERVAL = 2000; // Mise à jour toutes les 2 secondes
 let lastCheckDate = new Date().toISOString();
 let currentNotificationIds = [];
 

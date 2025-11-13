@@ -27,10 +27,28 @@ if (!function_exists('ft_removeTerrainPhoto')) {
         if (!$relativePath) {
             return;
         }
+
+        $baseDir = realpath(__DIR__ . '/../../');
+        if ($baseDir === false) {
+            return;
+        }
+
         $normalized = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($relativePath, '/\\'));
-        $fullPath = __DIR__ . '/../' . $normalized;
-        if (is_file($fullPath)) {
-            @unlink($fullPath);
+        $fullPath = $baseDir . DIRECTORY_SEPARATOR . $normalized;
+        $fullPathReal = realpath($fullPath) ?: $fullPath;
+
+        if (strpos($fullPathReal, $baseDir) !== 0) {
+            return;
+        }
+
+        if (is_file($fullPathReal)) {
+            @unlink($fullPathReal);
+        }
+
+        // Nettoyer l'ancien emplacement (views/assets) si nécessaire
+        $legacyPath = $baseDir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $normalized;
+        if (is_file($legacyPath)) {
+            @unlink($legacyPath);
         }
     }
 }
@@ -68,7 +86,12 @@ if (!function_exists('ft_handleTerrainUpload')) {
             return ['success' => false, 'message' => 'Format d image non supporte.'];
         }
 
-        $uploadDir = __DIR__ . '/../assets/uploads/terrains';
+        $baseDir = realpath(__DIR__ . '/../../');
+        if ($baseDir === false) {
+            return ['success' => false, 'message' => 'Répertoire de base introuvable.'];
+        }
+
+        $uploadDir = $baseDir . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'terrains';
         if (!is_dir($uploadDir) && !mkdir($uploadDir, 0775, true)) {
             return ['success' => false, 'message' => 'Impossible de preparer le dossier d upload.'];
         }
