@@ -11,6 +11,21 @@ class Reservation {
         $this->db = $database ? $database : getDB();
     }
 
+    // Récupérer une réservation par id (sécurisée par l'utilisateur)
+    public function getReservationByIdForUser($idReservation, $idUtilisateur) {
+        $sql = "SELECT r.*,
+                       t.nom as terrain_nom, t.taille, t.type, t.prix as terrain_prix,
+                       ch.heure_debut, ch.heure_fin
+                FROM reservation r
+                JOIN terrain t ON r.idTerrain = t.idTerrain
+                JOIN creneaux_horaires ch ON r.idCreneau = ch.idCreneau
+                WHERE r.idReservation = ? AND r.idUtilisateur = ?
+                LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$idReservation, $idUtilisateur]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     // Vérifier la disponibilité d'un créneau
     public function checkDisponibilite($idTerrain, $dateReservation, $idCreneau) {
         $sql = "SELECT COUNT(*) as count 
@@ -23,6 +38,20 @@ class Reservation {
         $stmt->execute([$idTerrain, $dateReservation, $idCreneau]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
+        return $result['count'] == 0;
+    }
+
+    // Vérifier la disponibilité en excluant une réservation donnée (pour modification)
+    public function checkDisponibiliteExcluant($idTerrain, $dateReservation, $idCreneau, $excludeIdReservation) {
+        $sql = "SELECT COUNT(*) as count 
+                FROM reservation 
+                WHERE idTerrain = ? 
+                  AND dateReservation = ? 
+                  AND idCreneau = ?
+                  AND idReservation <> ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$idTerrain, $dateReservation, $idCreneau, $excludeIdReservation]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['count'] == 0;
     }
 
@@ -44,6 +73,31 @@ class Reservation {
             $reservationData['arbitre'] ?? 0,
             $reservationData['maillot'] ?? 0,
             $reservationData['douche'] ?? 0
+        ]);
+    }
+
+    // Mettre à jour une réservation (seulement propriétaire)
+    public function updateReservation($idReservation, $idUtilisateur, $data) {
+        $sql = "UPDATE reservation
+                SET dateReservation = ?, 
+                    idCreneau = ?, 
+                    demande = ?, 
+                    ballon = ?, 
+                    arbitre = ?, 
+                    maillot = ?, 
+                    douche = ?
+                WHERE idReservation = ? AND idUtilisateur = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            $data['dateReservation'],
+            $data['idCreneau'],
+            $data['demande'] ?? '',
+            $data['ballon'] ?? 0,
+            $data['arbitre'] ?? 0,
+            $data['maillot'] ?? 0,
+            $data['douche'] ?? 0,
+            $idReservation,
+            $idUtilisateur
         ]);
     }
 
