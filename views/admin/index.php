@@ -314,126 +314,252 @@ $pageTitle = 'Administration | Foot Fields';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <meta name="theme-color" content="#103e36">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         .ft-admin-layout {
             display: flex;
             min-height: 100vh;
-            background: linear-gradient(135deg, #f8fafb 0%, #f0f4f8 100%);
+            background: linear-gradient(135deg, #0f3a34 0%, #083027 50%, #061f1a 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
+        
         .ft-admin-sidebar {
             width: 280px;
-            background: linear-gradient(180deg, #0d3a32 0%, #0a2e28 50%, #062420 100%);
+            background: linear-gradient(180deg, #0a2420 0%, #072018 50%, #051512 100%);
             color: white;
             padding: 0;
             position: fixed;
             height: 100vh;
             left: 0;
             top: 0;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            box-shadow: 12px 0 48px rgba(0,0,0,0.4);
             overflow-y: auto;
             z-index: 1000;
+            border-right: 2px solid rgba(31,189,143,0.15);
         }
+        
+        .ft-admin-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .ft-admin-sidebar::-webkit-scrollbar-track {
+            background: rgba(31,189,143,0.08);
+        }
+        
+        .ft-admin-sidebar::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #1fbd8f, #15a878);
+            border-radius: 3px;
+        }
+        
+        .ft-admin-sidebar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #27d99f, #1bc983);
+        }
+        
         .ft-admin-sidebar-header {
-            padding: 30px 20px;
-            background: linear-gradient(135deg, rgba(43,217,151,0.1) 0%, rgba(43,217,151,0.05) 100%);
-            border-bottom: 2px solid rgba(43,217,151,0.3);
+            padding: 35px 20px;
+            background: linear-gradient(135deg, rgba(31,189,143,0.2) 0%, rgba(31,189,143,0.1) 100%);
+            border-bottom: 3px solid #1fbd8f;
             text-align: center;
+            box-shadow: inset 0 2px 12px rgba(31,189,143,0.08);
         }
+        
         .ft-admin-sidebar-header h2 {
             margin: 0;
-            font-size: 20px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #2bd997 0%, #1bc983 100%);
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #27d99f 0%, #1fbd8f 50%, #15a878 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            letter-spacing: -0.8px;
+            text-shadow: 0 2px 8px rgba(31,189,143,0.2);
         }
+        
         .ft-admin-sidebar-header p {
-            margin: 8px 0 0 0;
-            font-size: 12px;
-            color: rgba(43,217,151,0.8);
-            font-weight: 500;
+            margin: 12px 0 0 0;
+            font-size: 11px;
+            color: #1fbd8f;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.9;
         }
+        
         .ft-admin-nav {
-            padding: 20px 0;
+            padding: 28px 0;
         }
+        
         .ft-admin-nav-item {
             display: flex;
             align-items: center;
-            padding: 14px 20px;
-            color: rgba(255,255,255,0.75);
+            padding: 16px 20px;
+            color: rgba(255,255,255,0.8);
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 4px solid transparent;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .ft-admin-nav-item:hover {
-            background: linear-gradient(90deg, rgba(43,217,151,0.15) 0%, rgba(43,217,151,0.05) 100%);
-            color: #2bd997;
-            border-left-color: #2bd997;
-            padding-left: 24px;
-        }
-        .ft-admin-nav-item.active {
-            background: linear-gradient(90deg, rgba(43,217,151,0.2) 0%, rgba(43,217,151,0.08) 100%);
-            color: #2bd997;
-            border-left-color: #1bc983;
+            transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-left: 5px solid transparent;
+            font-size: 15px;
             font-weight: 600;
-            box-shadow: inset -2px 0 8px rgba(43,217,151,0.1);
+            position: relative;
+            margin: 8px 12px;
+            border-radius: 0 16px 16px 0;
         }
+        
+        .ft-admin-nav-item:hover {
+            background: linear-gradient(90deg, rgba(31,189,143,0.35) 0%, rgba(31,189,143,0.12) 100%);
+            color: #27d99f;
+            border-left-color: #27d99f;
+            padding-left: 32px;
+            box-shadow: inset 0 0 24px rgba(31,189,143,0.15), 0 8px 20px rgba(31,189,143,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .ft-admin-nav-item.active {
+            background: linear-gradient(90deg, rgba(31,189,143,0.4) 0%, rgba(31,189,143,0.18) 100%);
+            color: #27d99f;
+            border-left-color: #1fbd8f;
+            font-weight: 800;
+            box-shadow: inset 0 0 32px rgba(31,189,143,0.2), 0 6px 20px rgba(31,189,143,0.3);
+            border-radius: 0 16px 16px 0;
+        }
+        
+        .ft-admin-nav-item::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 28px;
+            background: linear-gradient(90deg, #27d99f, rgba(31,189,143,0.3));
+            border-radius: 16px 0 0 16px;
+            transition: width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            box-shadow: -4px 0 12px rgba(31,189,143,0.2);
+        }
+        
+        .ft-admin-nav-item:hover::after,
+        .ft-admin-nav-item.active::after {
+            width: 6px;
+            opacity: 1;
+        }
+        
         .ft-admin-nav-item i {
-            margin-right: 14px;
-            font-size: 17px;
-            transition: transform 0.3s ease;
+            margin-right: 18px;
+            font-size: 20px;
+            transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
         }
+        
         .ft-admin-nav-item:hover i {
-            transform: translateX(2px);
+            transform: scale(1.25) rotate(8deg);
+            color: #27d99f;
+            filter: drop-shadow(0 0 8px rgba(31,189,143,0.4));
         }
+        
+        .ft-admin-nav-item.active i {
+            animation: iconPulse 1.2s ease-in-out infinite;
+            color: #27d99f;
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(31,189,143,0.3)); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(31,189,143,0.5)); }
+        }
+        
         .ft-admin-content-wrapper {
             margin-left: 280px;
             flex: 1;
             display: flex;
             flex-direction: column;
         }
+        
         .ft-admin-topbar {
-            background: linear-gradient(90deg, #ffffff 0%, #f9fbfc 100%);
-            padding: 16px 30px;
-            box-shadow: 0 2px 12px rgba(13,58,50,0.08);
-            border-bottom: 1px solid #e8eef4;
+            background: linear-gradient(90deg, rgba(31,189,143,0.08) 0%, rgba(31,189,143,0.03) 100%);
+            padding: 20px 40px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+            border-bottom: 2px solid rgba(31,189,143,0.25);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            backdrop-filter: blur(10px);
+            background-attachment: fixed;
         }
+        
         .ft-admin-topbar-title {
-            font-size: 16px;
-            font-weight: 600;
-            background: linear-gradient(135deg, #0d3a32 0%, #1bc983 100%);
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #27d99f 0%, #1fbd8f 50%, #15a878 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            letter-spacing: -0.5px;
         }
+        
         .ft-admin-main {
             flex: 1;
-            padding: 30px;
+            padding: 40px;
             overflow-y: auto;
+            background: linear-gradient(135deg, rgba(31,189,143,0.05) 0%, rgba(31,189,143,0.02) 100%);
         }
+        
+        .ft-admin-main::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        .ft-admin-main::-webkit-scrollbar-track {
+            background: rgba(31,189,143,0.08);
+        }
+        
+        .ft-admin-main::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #27d99f, #1fbd8f, #15a878);
+            border-radius: 5px;
+            box-shadow: 0 0 12px rgba(31,189,143,0.3);
+        }
+        
+        .ft-admin-main::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #2dd9a8, #27d99f, #1bc983);
+            box-shadow: 0 0 16px rgba(31,189,143,0.5);
+        }
+        
         @media (max-width: 768px) {
             .ft-admin-sidebar {
-                width: 250px;
+                width: 240px;
             }
             .ft-admin-content-wrapper {
-                margin-left: 250px;
+                margin-left: 240px;
             }
             .ft-admin-main {
-                padding: 15px;
+                padding: 25px;
+            }
+            .ft-admin-topbar {
+                padding: 16px 25px;
             }
         }
+        
         @media (max-width: 576px) {
             .ft-admin-sidebar {
                 width: 200px;
             }
             .ft-admin-content-wrapper {
                 margin-left: 200px;
+            }
+            .ft-admin-topbar {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+                padding: 14px 18px;
+            }
+            .ft-admin-nav-item {
+                font-size: 13px;
             }
         }
     </style>
