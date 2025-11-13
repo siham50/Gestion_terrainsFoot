@@ -174,20 +174,6 @@ $activityFeed = array_slice($activityFeed, 0, 6);
 $todayLabel = date('d/m/Y');
 ?>
 <div class="ft-admin ft-admin--revamp">
-    <section class="ft-admin__toolbar" id="ft-admin-tabs">
-        <div class="ft-toolbar__intro">
-            <p class="ft-label">Espace de gestion</p>
-            <h2><?php echo htmlspecialchars($activeSectionMeta['title'], ENT_QUOTES, 'UTF-8'); ?></h2>
-            <p><?php echo htmlspecialchars($activeSectionMeta['description'], ENT_QUOTES, 'UTF-8'); ?></p>
-        </div>
-        <div class="ft-tablist">
-            <?php foreach ($adminTabs as $key => $tab): ?>
-                <a class="ft-tab<?php echo $currentSection === $key ? ' is-active' : ''; ?>" href="?section=<?php echo $key; ?>">
-                    <span><?php echo htmlspecialchars($tab['label'], ENT_QUOTES, 'UTF-8'); ?></span>
-                </a>
-            <?php endforeach; ?>
-        </div>
-    </section>
 
     <section class="ft-admin__prologue">
         <article class="ft-card ft-hero-card">

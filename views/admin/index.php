@@ -311,16 +311,184 @@ $pageTitle = 'Administration | Foot Fields';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></title>
     <link rel="stylesheet" href="../../assets/css/Style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <meta name="theme-color" content="#103e36">
+    <style>
+        .ft-admin-layout {
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafb 0%, #f0f4f8 100%);
+        }
+        .ft-admin-sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0d3a32 0%, #0a2e28 50%, #062420 100%);
+            color: white;
+            padding: 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .ft-admin-sidebar-header {
+            padding: 30px 20px;
+            background: linear-gradient(135deg, rgba(43,217,151,0.1) 0%, rgba(43,217,151,0.05) 100%);
+            border-bottom: 2px solid rgba(43,217,151,0.3);
+            text-align: center;
+        }
+        .ft-admin-sidebar-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2bd997 0%, #1bc983 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .ft-admin-sidebar-header p {
+            margin: 8px 0 0 0;
+            font-size: 12px;
+            color: rgba(43,217,151,0.8);
+            font-weight: 500;
+        }
+        .ft-admin-nav {
+            padding: 20px 0;
+        }
+        .ft-admin-nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .ft-admin-nav-item:hover {
+            background: linear-gradient(90deg, rgba(43,217,151,0.15) 0%, rgba(43,217,151,0.05) 100%);
+            color: #2bd997;
+            border-left-color: #2bd997;
+            padding-left: 24px;
+        }
+        .ft-admin-nav-item.active {
+            background: linear-gradient(90deg, rgba(43,217,151,0.2) 0%, rgba(43,217,151,0.08) 100%);
+            color: #2bd997;
+            border-left-color: #1bc983;
+            font-weight: 600;
+            box-shadow: inset -2px 0 8px rgba(43,217,151,0.1);
+        }
+        .ft-admin-nav-item i {
+            margin-right: 14px;
+            font-size: 17px;
+            transition: transform 0.3s ease;
+        }
+        .ft-admin-nav-item:hover i {
+            transform: translateX(2px);
+        }
+        .ft-admin-content-wrapper {
+            margin-left: 280px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .ft-admin-topbar {
+            background: linear-gradient(90deg, #ffffff 0%, #f9fbfc 100%);
+            padding: 16px 30px;
+            box-shadow: 0 2px 12px rgba(13,58,50,0.08);
+            border-bottom: 1px solid #e8eef4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ft-admin-topbar-title {
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #0d3a32 0%, #1bc983 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .ft-admin-main {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        @media (max-width: 768px) {
+            .ft-admin-sidebar {
+                width: 250px;
+            }
+            .ft-admin-content-wrapper {
+                margin-left: 250px;
+            }
+            .ft-admin-main {
+                padding: 15px;
+            }
+        }
+        @media (max-width: 576px) {
+            .ft-admin-sidebar {
+                width: 200px;
+            }
+            .ft-admin-content-wrapper {
+                margin-left: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
-<?php require __DIR__ . '/../../includes/Navbar.php'; ?>
+<div class="ft-admin-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="ft-admin-sidebar">
+        <div class="ft-admin-sidebar-header">
+            <h2>FootFields</h2>
+            <p>Administration</p>
+        </div>
+        <nav class="ft-admin-nav">
+            <a href="?section=users" class="ft-admin-nav-item <?php echo $currentSection === 'users' ? 'active' : ''; ?>">
+                <i class="bi bi-people-fill"></i>
+                <span>Utilisateurs</span>
+            </a>
+            <a href="?section=terrains" class="ft-admin-nav-item <?php echo $currentSection === 'terrains' ? 'active' : ''; ?>">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Terrains</span>
+            </a>
+            <a href="?section=prices" class="ft-admin-nav-item <?php echo $currentSection === 'prices' ? 'active' : ''; ?>">
+                <i class="bi bi-tag-fill"></i>
+                <span>Tarifs</span>
+            </a>
+            <hr style="margin: 15px 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+            <a href="../../views/public/Home.php" class="ft-admin-nav-item">
+                <i class="bi bi-house-door-fill"></i>
+                <span>Retour au site</span>
+            </a>
+            <a href="../../views/public/logout.php" class="ft-admin-nav-item">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Déconnexion</span>
+            </a>
+        </nav>
+    </aside>
 
-<main class="ft-shell">
-    <div class="ft-content">
-    <?php require __DIR__ . '/Dashboard.php'; ?>
+    <!-- Main Content -->
+    <div class="ft-admin-content-wrapper">
+        <div class="ft-admin-topbar">
+            <div class="ft-admin-topbar-title">
+                <?php 
+                    $sectionLabels = ['users' => 'Utilisateurs', 'terrains' => 'Terrains', 'prices' => 'Tarifs'];
+                    echo 'Gestion : ' . ($sectionLabels[$currentSection] ?? 'Administration');
+                ?>
+            </div>
+            <div style="font-size: 12px; color: #666;">
+                <?php echo date('d/m/Y H:i'); ?>
+            </div>
+        </div>
+        <main class="ft-admin-main">
+            <?php require __DIR__ . '/Dashboard.php'; ?>
+        </main>
     </div>
-</main>
+</div>
 
 <?php require __DIR__ . '/../../includes/Footer.php'; ?>
 <script>
