@@ -57,10 +57,11 @@ class Reservation {
 
     // Créer une réservation
     public function createReservation($reservationData) {
+        // idMatch est optionnel (NULL par défaut)
         $sql = "INSERT INTO reservation 
                 (idTerrain, idUtilisateur, dateReservation, idCreneau, demande, 
-                 ballon, arbitre, maillot, douche, dateCreation) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                 ballon, arbitre, maillot, douche, idMatch, dateCreation) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
@@ -72,7 +73,8 @@ class Reservation {
             $reservationData['ballon'] ?? 0,
             $reservationData['arbitre'] ?? 0,
             $reservationData['maillot'] ?? 0,
-            $reservationData['douche'] ?? 0
+            $reservationData['douche'] ?? 0,
+            $reservationData['idMatch'] ?? null
         ]);
     }
 

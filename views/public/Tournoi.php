@@ -1,276 +1,566 @@
+<?php
+// views/public/Tournoi.php
+$GLOBALS['contentDisplayed'] = true;
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Récupérer l'ID du tournoi
+$idTournoi = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if ($idTournoi <= 0) {
+    header('Location: MesTournois.php');
+    exit;
+}
+
+// Charger les données depuis le contrôleur
+require_once __DIR__ . '/../../controllers/TournoiController.php';
+require_once __DIR__ . '/../../config/Database.php';
+
+$controller = new TournoiController();
+$tournoi = $controller->viewTournoi($idTournoi);
+
+if (!$tournoi) {
+    header('Location: MesTournois.php?error=Tournoi introuvable');
+    exit;
+}
+
+// Vérifier les permissions pour modifier les scores
+$canEdit = false;
+if (isset($_SESSION['user_id'])) {
+    $isAdmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+    $isOrganisateur = $tournoi['idUtilisateur'] == $_SESSION['user_id'];
+    $canEdit = $isAdmin || $isOrganisateur;
+}
+
+// Organiser les matchs par rounds
+$bracket = $tournoi['bracket'] ?? [];
+$stats = $tournoi['stats'] ?? [];
+
+// Déterminer le nombre de rounds
+$nombreRounds = count($bracket);
+$roundNames = [
+    1 => 'Huitièmes de finale',
+    2 => 'Quarts de finale',
+    3 => 'Demi-finales',
+    4 => 'Finale'
+];
+
+// Pour 8 équipes
+if (count($tournoi['equipes'] ?? []) === 8) {
+    $roundNames = [
+        1 => 'Quarts de finale',
+        2 => 'Demi-finales',
+        3 => 'Finale'
+    ];
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tournoi 8 équipes — FootTime</title>
-  <link rel="stylesheet" href="../../assets/css/style.css">
-  <style>
-    .tournament-shell {
-      margin-left: 240px; 
-      padding: 36px 24px;
-      min-height: calc(100vh - 60px);
-    }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title><?php echo htmlspecialchars($tournoi['format'] ?? 'Tournoi'); ?> — FootTime</title>
+    <link rel="stylesheet" href="../../assets/css/Style.css">
+    <style>
+        .tournament-shell {
+            margin-left: 240px; 
+            padding: 36px 24px;
+            min-height: calc(100vh - 60px);
+        }
 
-    .bracket-wrap {
-      position: relative;
-      width: 100%;
-      padding: 24px 8px;
-      min-height: 480px;
-    }
+        .tournament-header {
+            margin-bottom: 32px;
+        }
 
-    .bracket {
-      position: relative;
-      height: 520px;        
-      width: 1100px;       
-      margin: 0 auto;
-    }
+        .tournament-header h1 {
+            margin-bottom: 8px;
+        }
 
-    .match {
-      position: absolute; 
-      width: 200px;
-      background: var(--ft-panel);
-      border: 1px solid var(--ft-border);
-      border-radius: 12px;
-      padding: 8px 12px;
-      box-shadow: var(--ft-shadow);
-      color: var(--ft-text);
-      text-align: left;
-      font-size: 14px;
-    }
+        .tournament-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
 
-    .match .team {
-      display:flex;
-      justify-content:space-between;
-      padding:8px 6px;
-      border-radius:8px;
-      background: rgba(255,255,255,0.02);
-      margin:6px 0;
-    }
+        .stat-card {
+            padding: 16px;
+            background: var(--ft-panel);
+            border: 1px solid var(--ft-border);
+            border-radius: 12px;
+            min-width: 150px;
+        }
 
-    .match .team .name { flex:1; }
-    .match .team .score {
-      width:36px;
-      text-align:center;
-      font-weight:700;
-      color:var(--ft-accent);
-    }
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--ft-text-dim);
+            margin-bottom: 4px;
+        }
 
-    .match .team.winner { font-weight:700; color:var(--ft-accent); }
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--ft-accent);
+        }
 
-    .champion {
-      border-color: var(--ft-accent);
-      background: rgba(43,217,151,0.06);
-      text-align:center;
-      font-weight:700;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-    }
+        .bracket-wrap {
+            position: relative;
+            width: 100%;
+            padding: 24px 8px;
+            min-height: 480px;
+            overflow-x: auto;
+        }
 
-    .bracket-svg {
-      position:absolute;
-      left:0; top:0;
-      width:100%; height:100%;
-      pointer-events: none;
-    }
+        .bracket {
+            position: relative;
+            min-height: 520px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-    @media (max-width: 900px) {
-      .tournament-shell { margin-left: 0; padding: 16px; }
-      .bracket { width: 1000px; }
-    }
-  </style>
+        .match {
+            position: absolute; 
+            width: 220px;
+            background: var(--ft-panel);
+            border: 1px solid var(--ft-border);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: var(--ft-shadow);
+            color: var(--ft-text);
+            text-align: left;
+            font-size: 14px;
+            z-index: 10;
+        }
+
+        .match.has-winner {
+            border-color: var(--ft-accent);
+            background: rgba(43, 217, 151, 0.05);
+        }
+
+        .match .round-label {
+            font-size: 11px;
+            color: var(--ft-text-dim);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .match .team {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            margin: 6px 0;
+            min-height: 36px;
+        }
+
+        .match .team.winner {
+            font-weight: 700;
+            color: var(--ft-accent);
+            background: rgba(43, 217, 151, 0.1);
+        }
+
+        .match .team .name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .match .team .score {
+            width: 40px;
+            text-align: center;
+            font-weight: 700;
+            color: var(--ft-accent);
+            font-size: 16px;
+        }
+
+        .match .score-input {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            align-items: center;
+        }
+
+        .match .score-input input {
+            width: 50px;
+            padding: 4px 8px;
+            border: 1px solid var(--ft-border);
+            border-radius: 4px;
+            background: var(--ft-panel);
+            color: var(--ft-text);
+            text-align: center;
+        }
+
+        .match .score-input button {
+            padding: 4px 12px;
+            background: var(--ft-accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .match .score-input button:hover {
+            opacity: 0.9;
+        }
+
+        .champion {
+            border-color: var(--ft-accent);
+            background: rgba(43,217,151,0.1);
+            text-align: center;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 18px;
+        }
+
+        .bracket-svg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bracket-svg path {
+            stroke: rgba(43, 217, 151, 0.6);
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+        }
+
+        @media (max-width: 900px) {
+            .tournament-shell {
+                margin-left: 0;
+                padding: 16px;
+            }
+            .bracket {
+                width: 100%;
+            }
+        }
+
+        .no-bracket {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--ft-text-dim);
+        }
+    </style>
 </head>
 <body>
-  <?php require '../../includes/Navbar.php'; ?>
+    <?php require '../../includes/Navbar.php'; ?>
 
-  <main class="tournament-shell">
-    <h1 class="ft-h1" style="text-align:center; margin-bottom:14px;">Tournoi Inter-Équipes — 8 équipes</h1>
-
-    <div class="bracket-wrap">
-      <div class="bracket" id="bracket">
-
-        <svg class="bracket-svg" id="bracket-svg" xmlns="http://www.w3.org/2000/svg"></svg>
-
-        <div class="match" data-id="q1" data-round="1" data-index="1">
-          <div style="font-size:12px;color:var(--ft-text-dim);">QF 1</div>
-          <div class="team"><div class="name">Team 1</div><div class="score">2</div></div>
-          <div class="team winner"><div class="name">Team 2</div><div class="score">3</div></div>
+    <main class="tournament-shell">
+        <div class="tournament-header">
+            <h1 class="ft-h1"><?php echo htmlspecialchars($tournoi['format'] ?? 'Tournoi'); ?></h1>
+            <?php if (!empty($tournoi['champion'])): ?>
+                <div style="font-size: 18px; color: var(--ft-accent); font-weight: 600; margin-top: 8px;">
+                    🏆 Champion: <?php echo htmlspecialchars($tournoi['champion']); ?>
+                </div>
+            <?php endif; ?>
         </div>
 
-        <div class="match" data-id="q2" data-round="1" data-index="2">
-          <div style="font-size:12px;color:var(--ft-text-dim);">QF 2</div>
-          <div class="team winner"><div class="name">Team 3</div><div class="score">1</div></div>
-          <div class="team"><div class="name">Team 4</div><div class="score">0</div></div>
+        <div class="tournament-stats">
+            <div class="stat-card">
+                <div class="label">Équipes</div>
+                <div class="value"><?php echo count($tournoi['equipes'] ?? []); ?></div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Matchs</div>
+                <div class="value"><?php echo $stats['total_matchs'] ?? 0; ?></div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Terminés</div>
+                <div class="value"><?php echo $stats['matchs_termines'] ?? 0; ?></div>
+            </div>
+            <div class="stat-card">
+                <div class="label">À venir</div>
+                <div class="value"><?php echo $stats['matchs_a_venir'] ?? 0; ?></div>
+            </div>
         </div>
 
-        <div class="match" data-id="q3" data-round="1" data-index="3">
-          <div style="font-size:12px;color:var(--ft-text-dim);">QF 3</div>
-          <div class="team"><div class="name">Team 5</div><div class="score">0</div></div>
-          <div class="team winner"><div class="name">Team 6</div><div class="score">2</div></div>
+        <div class="bracket-wrap">
+            <?php if (empty($bracket)): ?>
+                <div class="no-bracket ft-card">
+                    <p>Le bracket n'a pas encore été généré.</p>
+                    <?php if ($canEdit): ?>
+                        <button class="ft-btn ft-btn-primary" onclick="generateBracket()" style="margin-top: 16px;">
+                            Générer le bracket
+                        </button>
+                    <?php endif; ?>
+                </div>
+            <?php else: ?>
+                <div class="bracket" id="bracket">
+                    <svg class="bracket-svg" id="bracket-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+                    
+                    <?php 
+                    $matchIndex = 0;
+                    foreach ($bracket as $round => $matches): 
+                        $roundName = $roundNames[$round] ?? "Round $round";
+                        foreach ($matches as $match):
+                            $matchIndex++;
+                            $hasWinner = !empty($match['gagnant']);
+                            $isFinale = ($round === max(array_keys($bracket)));
+                            $isChampion = $isFinale && $hasWinner;
+                            $hasReservation = !empty($match['idReservation']);
+                    ?>
+                        <div class="match <?php echo $hasWinner ? 'has-winner' : ''; ?> <?php echo $isChampion ? 'champion' : ''; ?>" 
+                             data-id="<?php echo $match['idMatch']; ?>"
+                             data-round="<?php echo $round; ?>"
+                             data-index="<?php echo $matchIndex; ?>"
+                             data-next-match-id="<?php echo $match['nextMatchId'] ?? ''; ?>">
+                            <div class="round-label"><?php echo htmlspecialchars($roundName); ?></div>
+                            
+                            <?php if ($isChampion): ?>
+                                <div style="text-align: center;">
+                                    🏆 <?php echo htmlspecialchars($match['gagnant'] ?? 'Champion'); ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="team <?php echo ($match['gagnant'] === $match['equipe']) ? 'winner' : ''; ?>">
+                                    <div class="name"><?php echo htmlspecialchars($match['equipe'] ?? 'TBD'); ?></div>
+                                    <div class="score"><?php 
+                                        if ($match['score']) {
+                                            $scores = explode('-', $match['score']);
+                                            echo htmlspecialchars($scores[0] ?? '0');
+                                        } else {
+                                            echo '-';
+                                        }
+                                    ?></div>
+                                </div>
+                                <div class="team <?php echo ($match['gagnant'] === $match['equipeAdv']) ? 'winner' : ''; ?>">
+                                    <div class="name"><?php echo htmlspecialchars($match['equipeAdv'] ?? 'TBD'); ?></div>
+                                    <div class="score"><?php 
+                                        if ($match['score']) {
+                                            $scores = explode('-', $match['score']);
+                                            echo htmlspecialchars($scores[1] ?? '0');
+                                        } else {
+                                            echo '-';
+                                        }
+                                    ?></div>
+                                </div>
+                                <?php if ($canEdit && !$hasWinner && !$hasReservation): ?>
+                                    <div class="score-input">
+                                        <button onclick="window.location.href='Home.php?from=bracket&idMatch=<?php echo $match['idMatch']; ?>'">Réserver</button>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($canEdit && !$hasWinner && $hasReservation): ?>
+                                    <div class="score-input">
+                                        <input type="number" min="0" id="score1_<?php echo $match['idMatch']; ?>" placeholder="0" style="width: 50px;">
+                                        <span>-</span>
+                                        <input type="number" min="0" id="score2_<?php echo $match['idMatch']; ?>" placeholder="0" style="width: 50px;">
+                                        <button onclick="updateScore(<?php echo $match['idMatch']; ?>)">Valider</button>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </div>
+                    <?php 
+                        endforeach;
+                    endforeach; 
+                    ?>
+                </div>
+            <?php endif; ?>
         </div>
 
-        <div class="match" data-id="q4" data-round="1" data-index="4">
-          <div style="font-size:12px;color:var(--ft-text-dim);">QF 4</div>
-          <div class="team"><div class="name">Team 7</div><div class="score">1</div></div>
-          <div class="team winner"><div class="name">Team 8</div><div class="score">4</div></div>
+        <div style="margin-top: 24px;">
+            <a href="MesTournois.php" class="ft-btn ft-btn-secondary">← Retour aux tournois</a>
         </div>
+    </main>
 
-        <div class="match" data-id="s1" data-round="2" data-index="1">
-          <div style="font-size:12px;color:var(--ft-text-dim);">SF 1</div>
-          <div class="team"><div class="name">Winner QF1</div><div class="score">1</div></div>
-          <div class="team winner"><div class="name">Winner QF2</div><div class="score">2</div></div>
-        </div>
+    <?php require '../../includes/Footer.php'; ?>
 
-        <div class="match" data-id="s2" data-round="2" data-index="2">
-          <div style="font-size:12px;color:var(--ft-text-dim);">SF 2</div>
-          <div class="team winner"><div class="name">Winner QF3</div><div class="score">2</div></div>
-          <div class="team"><div class="name">Winner QF4</div><div class="score">0</div></div>
-        </div>
+    <script>
+        // Données du bracket pour le positionnement
+        const bracketData = <?php echo json_encode($bracket, JSON_UNESCAPED_UNICODE); ?>;
+        const roundNames = <?php echo json_encode($roundNames, JSON_UNESCAPED_UNICODE); ?>;
 
-        <div class="match" data-id="f1" data-round="3" data-index="1">
-          <div style="font-size:12px;color:var(--ft-text-dim);">Finale</div>
-          <div class="team"><div class="name">Winner SF1</div><div class="score">1</div></div>
-          <div class="team winner"><div class="name">Winner SF2</div><div class="score">3</div></div>
-        </div>
+        // Positionner les matchs et dessiner les connexions
+        function layoutBracket() {
+            const bracket = document.getElementById('bracket');
+            const svg = document.getElementById('bracket-svg');
+            
+            if (!bracket || !svg) return;
 
-        <div class="match champion" data-id="champ" data-round="4" data-index="1">
-          🏆 Champion: Winner F
-        </div>
+            // Nettoyer le SVG
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-      </div>
-    </div>
-  </main>
+            const matches = Array.from(bracket.querySelectorAll('.match'));
+            const rounds = {};
+            
+            matches.forEach(m => {
+                const round = parseInt(m.dataset.round, 10);
+                if (!rounds[round]) rounds[round] = [];
+                rounds[round].push(m);
+            });
 
-  <?php require '../../includes/Footer.php'; ?>
+            // Trier par index
+            Object.keys(rounds).forEach(r => {
+                rounds[r].sort((a, b) => parseInt(a.dataset.index, 10) - parseInt(b.dataset.index, 10));
+            });
 
-  <script>
-    (function () {
-      const bracket = document.getElementById('bracket');
-      const svg = document.getElementById('bracket-svg');
+            const matchWidth = 220;
+            const matchHeight = 120;
+            const vertGap = 60;
+            const horzGap = 80;
+            
+            // Calculer les positions X pour chaque round
+            const roundCount = Object.keys(rounds).length;
+            const totalWidth = (roundCount - 1) * (matchWidth + horzGap) + matchWidth;
+            const startX = 20;
+            
+            const colX = {};
+            Object.keys(rounds).forEach((r, i) => {
+                colX[parseInt(r, 10)] = startX + i * (matchWidth + horzGap);
+            });
 
-      const colX = {1: 20, 2: 270, 3: 520, 4: 770};
-      const matchWidth = 200;
-      const matchHeight = 88;
-      const vertGap = 50; 
+            // Positionner les matchs du premier round
+            const firstRound = Math.min(...Object.keys(rounds).map(Number));
+            const firstRoundMatches = rounds[firstRound];
+            const firstRoundCount = firstRoundMatches.length;
+            const totalHeight = firstRoundCount * matchHeight + (firstRoundCount - 1) * vertGap;
+            const startY = 40;
 
-      const matches = Array.from(bracket.querySelectorAll('.match'))
-        .map(el => ({
-          el,
-          id: el.dataset.id,
-          round: parseInt(el.dataset.round, 10),
-          index: parseInt(el.dataset.index, 10)
-        }));
+            bracket.style.height = (totalHeight + 80) + 'px';
+            svg.setAttribute('width', bracket.clientWidth);
+            svg.setAttribute('height', bracket.clientHeight);
 
-      const rounds = {};
-      matches.forEach(m => {
-        if (!rounds[m.round]) rounds[m.round] = [];
-        rounds[m.round].push(m);
-      });
+            firstRoundMatches.forEach((m, i) => {
+                const x = colX[firstRound];
+                const y = startY + i * (matchHeight + vertGap);
+                m.style.left = x + 'px';
+                m.style.top = y + 'px';
+            });
 
-      Object.keys(rounds).forEach(r => {
-        rounds[r].sort((a,b)=>a.index-b.index);
-      });
+            // Positionner les rounds suivants
+            for (let round = firstRound + 1; round <= roundCount; round++) {
+                if (!rounds[round]) continue;
+                
+                    rounds[round].forEach((m, i) => {
+                    // Trouver les matchs précédents qui pointent vers celui-ci
+                    const matchId = parseInt(m.dataset.id, 10);
+                    const prevMatches = matches.filter(prev => {
+                        const nextMatchId = prev.getAttribute('data-next-match-id');
+                        return nextMatchId && parseInt(nextMatchId, 10) === matchId;
+                    });
 
-      function layoutAndDraw() {
-        while (svg.firstChild) svg.removeChild(svg.firstChild);
+                    if (prevMatches.length > 0) {
+                        const y1 = parseFloat(prevMatches[0].style.top) + matchHeight / 2;
+                        const y2 = prevMatches.length > 1 ? parseFloat(prevMatches[1].style.top) + matchHeight / 2 : y1;
+                        const y = (y1 + y2) / 2 - matchHeight / 2;
+                        
+                        const x = colX[round];
+                        m.style.left = x + 'px';
+                        m.style.top = y + 'px';
 
-        const qCount = (rounds[1] || []).length || 4;
-        const totalHeight = qCount * matchHeight + (qCount - 1) * vertGap + 120;
-        bracket.style.height = totalHeight + 'px';
-        svg.setAttribute('width', bracket.clientWidth);
-        svg.setAttribute('height', bracket.clientHeight);
+                        // Dessiner les connexions
+                        prevMatches.forEach(prev => {
+                            drawConnector(prev, m, svg, bracket);
+                        });
+                    }
+                });
+            }
+        }
 
-        const topStart = 40;
-        (rounds[1] || []).forEach((m, i) => {
-          const x = colX[1];
-          const y = topStart + i * (matchHeight + vertGap);
-          m.el.style.left = x + 'px';
-          m.el.style.top = y + 'px';
-          m.el.style.width = matchWidth + 'px';
+        function drawConnector(source, target, svg, container) {
+            const sBox = source.getBoundingClientRect();
+            const tBox = target.getBoundingClientRect();
+            const containerBox = container.getBoundingClientRect();
+
+            const sx = (sBox.left - containerBox.left) + sBox.width;
+            const sy = (sBox.top - containerBox.top) + sBox.height / 2;
+            const tx = (tBox.left - containerBox.left);
+            const ty = (tBox.top - containerBox.top) + tBox.height / 2;
+
+            const dx = Math.max(30, (tx - sx) * 0.4);
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const d = `M ${sx} ${sy} C ${sx + dx} ${sy} ${tx - dx} ${ty} ${tx} ${ty}`;
+            path.setAttribute('d', d);
+            path.setAttribute('stroke', 'rgba(43,217,151,0.9)');
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke-width', '3');
+            path.setAttribute('stroke-linecap', 'round');
+            svg.appendChild(path);
+        }
+
+        // Mettre à jour un score
+        function updateScore(idMatch) {
+            const score1 = document.getElementById('score1_' + idMatch).value;
+            const score2 = document.getElementById('score2_' + idMatch).value;
+
+            if (!score1 || !score2) {
+                alert('Veuillez entrer les deux scores');
+                return;
+            }
+
+            const score = score1 + '-' + score2;
+
+            fetch('../../controllers/TournoiController.php?action=update_score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'idMatch=' + idMatch + '&score=' + encodeURIComponent(score)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Erreur: ' + (data.message || 'Erreur inconnue'));
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la mise à jour du score');
+            });
+        }
+
+        // Générer le bracket
+        function generateBracket() {
+            if (!confirm('Générer le bracket pour ce tournoi ?')) {
+                return;
+            }
+
+            fetch('../../controllers/TournoiController.php?action=generate_bracket', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'idTournoi=<?php echo $idTournoi; ?>&force=true'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Erreur: ' + (data.message || 'Erreur inconnue'));
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la génération du bracket');
+            });
+        }
+
+        // Initialiser le layout
+        window.addEventListener('load', function() {
+            layoutBracket();
         });
 
-        if (rounds[2]) {
-          rounds[2].forEach((m, i) => {
-            const childA = rounds[1][i * 2];
-            const childB = rounds[1][i * 2 + 1];
-            const xa = parseFloat(childA.el.style.left) + matchWidth;
-            const ya = parseFloat(childA.el.style.top) + matchHeight / 2;
-            const xb = parseFloat(childB.el.style.left) + matchWidth;
-            const yb = parseFloat(childB.el.style.top) + matchHeight / 2;
-            const x = colX[2];
-            const y = (ya + yb) / 2 - matchHeight / 2;
-            m.el.style.left = x + 'px';
-            m.el.style.top = y + 'px';
-            m.el.style.width = matchWidth + 'px';
-            drawConnector(childA, m);
-            drawConnector(childB, m);
-          });
-        }
-
-        if (rounds[3]) {
-          rounds[3].forEach((m, i) => {
-            const childA = rounds[2][0];
-            const childB = rounds[2][1];
-            const ya = parseFloat(childA.el.style.top) + matchHeight / 2;
-            const yb = parseFloat(childB.el.style.top) + matchHeight / 2;
-            const x = colX[3];
-            const y = (ya + yb) / 2 - matchHeight / 2;
-            m.el.style.left = x + 'px';
-            m.el.style.top = y + 'px';
-            m.el.style.width = matchWidth + 'px';
-            drawConnector(childA, m);
-            drawConnector(childB, m);
-          });
-        }
-
-        if (rounds[4]) {
-          rounds[4].forEach((m, i) => {
-            const child = rounds[3][0];
-            const yc = parseFloat(child.el.style.top) + matchHeight / 2;
-            const x = colX[4];
-            const y = yc - matchHeight / 2;
-            m.el.style.left = x + 'px';
-            m.el.style.top = y + 'px';
-            m.el.style.width = matchWidth - 40 + 'px';
-            drawConnector(child, m);
-          });
-        }
-
-      }
-
-      function drawConnector(source, target) {
-        const sBox = source.el.getBoundingClientRect();
-        const tBox = target.el.getBoundingClientRect();
-        const containerBox = bracket.getBoundingClientRect();
-
-        const sx = (sBox.left - containerBox.left) + sBox.width;
-        const sy = (sBox.top - containerBox.top) + sBox.height / 2;
-        const tx = (tBox.left - containerBox.left);
-        const ty = (tBox.top - containerBox.top) + tBox.height / 2;
-
-        const dx = Math.max(30, (tx - sx) * 0.4);
-        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-        const d = `M ${sx} ${sy} C ${sx + dx} ${sy} ${tx - dx} ${ty} ${tx} ${ty}`;
-        path.setAttribute('d', d);
-        path.setAttribute('stroke', 'rgba(43,217,151,0.9)');
-        path.setAttribute('fill', 'none');
-        path.setAttribute('stroke-width', '3');
-        path.setAttribute('stroke-linecap', 'round');
-        svg.appendChild(path);
-      }
-
-      function refresh() {
-        layoutAndDraw();
-      }
-
-      window.addEventListener('load', refresh);
-      window.addEventListener('resize', function () {
-        if (window._bracketResize) clearTimeout(window._bracketResize);
-        window._bracketResize = setTimeout(refresh, 100);
-      });
-    })();
-  </script>
+        window.addEventListener('resize', function() {
+            if (window._bracketResize) clearTimeout(window._bracketResize);
+            window._bracketResize = setTimeout(layoutBracket, 100);
+        });
+    </script>
 </body>
 </html>
