@@ -194,6 +194,7 @@ if ($reservationFeedback !== null) {
     <div class="ft-modal-body">
       <form id="reservationForm">
         <input type="hidden" id="resTerrainId" name="idTerrain">
+        <input type="hidden" id="idMatch" name="idMatch">
 
         <div class="ft-form-grid">
           <!-- Informations terrain sélectionné -->
@@ -339,6 +340,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Premier chargement immédiat
     loadTerrainsData();
+
+    // Si la page est ouverte depuis le bracket, récupérer idMatch de l'URL
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const idMatch = params.get('idMatch');
+        if (idMatch) {
+            const hiddenMatchInput = document.getElementById('idMatch');
+            if (hiddenMatchInput) hiddenMatchInput.value = idMatch;
+        }
+    } catch (e) {
+        console.warn('Impossible de lire le paramètre idMatch:', e);
+    }
 });
 
 // Écouteurs d'événements

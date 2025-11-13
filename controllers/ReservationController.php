@@ -55,7 +55,9 @@ class ReservationController {
             'ballon' => isset($_POST['ballon']) ? 1 : 0,
             'arbitre' => isset($_POST['arbitre']) ? 1 : 0,
             'maillot' => isset($_POST['maillot']) ? 1 : 0,
-            'douche' => isset($_POST['douche']) ? 1 : 0
+            'douche' => isset($_POST['douche']) ? 1 : 0,
+            // Nouveau: lier directement à un match de tournoi si fourni
+            'idMatch' => isset($_POST['idMatch']) && $_POST['idMatch'] !== '' ? (int)$_POST['idMatch'] : null
         ];
 
         // Validation des données
