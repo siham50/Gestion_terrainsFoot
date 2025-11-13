@@ -128,6 +128,11 @@ function formatHeures($heures) {
                             // Prix
                            $prix = $reservation['montantTotal'] ?? $reservation['montantTerrain'] ?? $reservation['terrain_prix'] ?? 'N/A';
                             $prixDisplay = is_numeric($prix) ? number_format($prix, 2, ',', ' ') . ' MAD' : $prix;
+
+                            // Verrou 48h
+                            $reservationDateTime = strtotime($reservation['dateReservation'] . ' ' . $reservation['heure_debut']);
+                            $hoursUntil = ($reservationDateTime - time()) / 3600;
+                            $locked48h = !$isPast && $hoursUntil < 48;
                             
                             // Options supplémentaires
                             $options = [];
@@ -180,14 +185,14 @@ function formatHeures($heures) {
                                     <div class="ft-price"><?php echo htmlspecialchars($prixDisplay); ?></div>
                                     <?php if (!$isPast): ?>
                             <div class="ft-actions-row">
-                                            <button class="ft-btn" onclick="modifierReservation(<?php echo $reservation['idReservation']; ?>)">
+                                            <button class="ft-btn" <?php echo $locked48h ? 'disabled title="Modification indisponible à moins de 48h"' : ''; ?> onclick="modifierReservation(<?php echo $reservation['idReservation']; ?>)">
                                                 <svg class="ft-ic" viewBox="0 0 24 24">
                                                     <path d="M3 12h18"/>
                                                     <path d="M12 3v18"/>
                                                 </svg>
                                     Modifier
                                 </button>
-                                            <button class="ft-btn ft-btn-danger" onclick="annulerReservation(<?php echo $reservation['idReservation']; ?>)">
+                                            <button class="ft-btn ft-btn-danger" <?php echo $locked48h ? 'disabled title="Annulation indisponible à moins de 48h"' : ''; ?> onclick="annulerReservation(<?php echo $reservation['idReservation']; ?>)">
                                                 <svg class="ft-ic" viewBox="0 0 24 24">
                                                     <path d="M19 7l-.9 12.1A2 2 0 0 1 16.1 21H7.9a2 2 0 0 1-2-1.9L5 7"/>
                                                     <path d="M10 11v6M14 11v6"/>
@@ -214,10 +219,92 @@ function formatHeures($heures) {
     </div>
 <?php require '../../includes/Footer.php'; ?>
 
+<!-- Modal de modification de réservation -->
+<div class="ft-modal" id="reservationEditModal">
+    <div class="ft-modal-content">
+        <div class="ft-modal-header">
+            <h2 id="reservationEditModalTitle">Modifier la réservation</h2>
+            <button class="ft-modal-close" id="reservationEditModalClose">&times;</button>
+        </div>
+        <div class="ft-modal-body">
+            <form id="reservationEditForm">
+                <input type="hidden" id="editIdReservation" name="idReservation">
+                <input type="hidden" id="editIdTerrain" name="idTerrain">
+
+                <div class="ft-form-grid">
+                    <div class="ft-form-group">
+                        <label>Terrain sélectionné</label>
+                        <input type="text" id="editTerrainName" class="ft-input" disabled>
+                    </div>
+
+                    <div class="ft-form-group">
+                        <label for="editDateReservation">Date de réservation</label>
+                        <input type="date" id="editDateReservation" name="dateReservation" class="ft-input" required>
+                    </div>
+
+                    <div class="ft-form-group">
+                        <label for="editIdCreneau">Créneau horaire</label>
+                        <select id="editIdCreneau" name="idCreneau" class="ft-input" required>
+                            <option value="">-- Sélectionner --</option>
+                            <option value="1">08:00 - 09:00</option>
+                            <option value="2">09:00 - 10:00</option>
+                            <option value="3">10:00 - 11:00</option>
+                            <option value="4">11:00 - 12:00</option>
+                            <option value="5">12:00 - 13:00</option>
+                            <option value="6">13:00 - 14:00</option>
+                            <option value="7">14:00 - 15:00</option>
+                            <option value="8">15:00 - 16:00</option>
+                            <option value="9">16:00 - 17:00</option>
+                            <option value="10">17:00 - 18:00</option>
+                            <option value="11">18:00 - 19:00</option>
+                            <option value="12">19:00 - 20:00</option>
+                            <option value="13">20:00 - 21:00</option>
+                            <option value="14">21:00 - 22:00</option>
+                            <option value="15">22:00 - 23:00</option>
+                        </select>
+                    </div>
+
+                    <div class="ft-form-group">
+                        <label>Taille du terrain</label>
+                        <input type="text" id="editTailleDisplay" class="ft-input" disabled>
+                    </div>
+
+                    <div class="ft-form-group">
+                        <label>Type de terrain</label>
+                        <input type="text" id="editTypeDisplay" class="ft-input" disabled>
+                    </div>
+
+                    <div class="ft-form-group">
+                        <label>Options supplémentaires</label>
+                        <div class="ft-checkbox-list">
+                            <label><input type="checkbox" id="editBallon" name="ballon" value="1"> Ballon</label>
+                            <label><input type="checkbox" id="editArbitre" name="arbitre" value="1"> Arbitre</label>
+                            <label><input type="checkbox" id="editMaillot" name="maillot" value="1"> Maillots</label>
+                            <label><input type="checkbox" id="editDouche" name="douche" value="1"> Douche</label>
+                        </div>
+                    </div>
+
+                    <div class="ft-form-group" style="grid-column: 1 / -1;">
+                        <label for="editDemande">Demande spécifique</label>
+                        <textarea id="editDemande" name="demande" class="ft-input" rows="4" placeholder="Commentaires ou requêtes spécifiques..."></textarea>
+                    </div>
+                </div>
+
+                <div class="ft-modal-actions">
+                    <button type="button" class="ft-btn ft-btn-secondary" id="reservationEditCancelBtn">Annuler</button>
+                    <button type="submit" class="ft-btn ft-btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+
 <script>
 // Configuration AJAX
 const RESERVATION_UPDATE_INTERVAL = 3000; // Mise à jour toutes les 3 secondes
 let currentReservationIds = []; // Stocker les IDs des réservations actuelles
+let forceReservationsRefresh = false; // Forcer un rafraîchissement complet après modification
+let currentReservationsDigest = ''; // Détecter les changements de contenu même si les IDs sont identiques
 
 // Initialiser les IDs des réservations actuelles au chargement
 document.addEventListener('DOMContentLoaded', function() {
@@ -242,7 +329,8 @@ function initializeReservationIds() {
 // Mettre à jour les réservations via AJAX
 function updateReservations() {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', '../../controllers/ReservationController.php?action=get_mes_reservations_data', true);
+    const cacheBuster = '&t=' + Date.now();
+    xhr.open('GET', '../../controllers/ReservationController.php?action=get_mes_reservations_data' + cacheBuster, true);
     
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -255,11 +343,15 @@ function updateReservations() {
                     // Vérifier s'il y a de nouvelles réservations
                     const newReservationIds = newReservations.map(r => r.idReservation);
                     const hasNewReservations = newReservationIds.some(id => !currentReservationIds.includes(id));
+                    const newDigest = computeReservationsDigest(newReservations);
+                    const hasContentChanged = newDigest !== currentReservationsDigest;
                     
-                    if (hasNewReservations || newReservations.length !== currentReservationIds.length) {
+                    if (forceReservationsRefresh || hasNewReservations || newReservations.length !== currentReservationIds.length || hasContentChanged) {
                         // Mettre à jour la page
                         updateReservationsDisplay(newReservations, newStats);
                         currentReservationIds = newReservationIds;
+                        forceReservationsRefresh = false; // reset
+                        currentReservationsDigest = newDigest;
                     } else {
                         // Mettre à jour seulement les statistiques (elles peuvent changer)
                         updateStatsDisplay(newStats);
@@ -276,6 +368,30 @@ function updateReservations() {
     };
     
     xhr.send();
+}
+
+// Crée un digest léger des réservations pour détecter les changements de contenu
+function computeReservationsDigest(reservations) {
+    try {
+        // Concaténer les champs qui peuvent changer et impactent l'affichage
+        const parts = reservations.map(r => [
+            r.idReservation,
+            r.dateReservation,
+            r.idCreneau,
+            r.heure_debut || '',
+            r.heure_fin || '',
+            r.demande || '',
+            r.ballon ? 1 : 0,
+            r.arbitre ? 1 : 0,
+            r.maillot ? 1 : 0,
+            r.douche ? 1 : 0,
+            r.montantTotal || r.montantTerrain || r.terrain_prix || ''
+        ].join('|'));
+        // Simple hash via joining; sufficient to detect diffs
+        return parts.join('~');
+    } catch (e) {
+        return '' + Math.random();
+    }
 }
 
 // Mettre à jour l'affichage des réservations
@@ -315,7 +431,7 @@ function updateReservationsDisplay(reservations, stats) {
         
         // Prix
         const prix = reservation.montantTotal || reservation.montantTerrain || reservation.terrain_prix || 'N/A';
-        const prixDisplay = isNumeric(prix) ? formatPrice(prix) + '€' : prix;
+        const prixDisplay = isNumeric(prix) ? formatPrice(prix) + ' MAD' : prix;
         
         // Options supplémentaires
         const options = [];
@@ -324,6 +440,7 @@ function updateReservationsDisplay(reservations, stats) {
         if (reservation.maillot) options.push('Maillots');
         if (reservation.douche) options.push('Douche');
         
+        const locked48h = (!isPast) && isLocked48h(reservation.dateReservation, reservation.heure_debut);
         html += `
                     <article class="ft-card ft-booking">
                         <div class="ft-booking-main">
@@ -367,14 +484,14 @@ function updateReservationsDisplay(reservations, stats) {
                     <div class="ft-price">${prixDisplay}</div>
                     ${!isPast ? `
                             <div class="ft-actions-row">
-                            <button class="ft-btn" onclick="modifierReservation(${reservation.idReservation})">
+                            <button class="ft-btn" ${locked48h ? 'disabled title="Modification indisponible à moins de 48h"' : ''} onclick="modifierReservation(${reservation.idReservation})">
                                 <svg class="ft-ic" viewBox="0 0 24 24">
                                     <path d="M3 12h18"/>
                                     <path d="M12 3v18"/>
                                 </svg>
                                     Modifier
                                 </button>
-                            <button class="ft-btn ft-btn-danger" onclick="annulerReservation(${reservation.idReservation})">
+                            <button class="ft-btn ft-btn-danger" ${locked48h ? 'disabled title="Annulation indisponible à moins de 48h"' : ''} onclick="annulerReservation(${reservation.idReservation})">
                                 <svg class="ft-ic" viewBox="0 0 24 24">
                                     <path d="M19 7l-.9 12.1A2 2 0 0 1 16.1 21H7.9a2 2 0 0 1-2-1.9L5 7"/>
                                     <path d="M10 11v6M14 11v6"/>
@@ -474,6 +591,16 @@ function isReservationPast(dateReservation, heureDebut) {
     return reservationDate < now;
 }
 
+function isLocked48h(dateReservation, heureDebut) {
+    const now = new Date();
+    const reservationDate = new Date(dateReservation);
+    const [hours, minutes] = (heureDebut || '00:00').split(':');
+    reservationDate.setHours(parseInt(hours), parseInt(minutes), 0);
+    const diffMs = reservationDate - now;
+    const diffHours = diffMs / (1000 * 60 * 60);
+    return diffHours < 48;
+}
+
 function isNumeric(value) {
     return !isNaN(value) && !isNaN(parseFloat(value));
 }
@@ -486,6 +613,11 @@ function escapeHtml(text) {
 
 // Fonction pour annuler une réservation
 function annulerReservation(idReservation) {
+    const btn = document.querySelector(`button[onclick="annulerReservation(${idReservation})"]`);
+    if (btn && btn.disabled) {
+        alert('Annulation indisponible à moins de 48h du match');
+        return;
+    }
     if (!confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')) {
         return;
     }
@@ -515,11 +647,122 @@ function annulerReservation(idReservation) {
 
 // Fonction pour modifier une réservation
 function modifierReservation(idReservation) {
-    // TODO: Implémenter la modification de réservation
-    alert('La modification de réservation sera disponible prochainement');
-    // Pour l'instant, rediriger vers le formulaire de réservation
-    // window.location.href = 'ReservationForm.php?id=' + idReservation;
+    const btn = document.querySelector(`button[onclick="modifierReservation(${idReservation})"]`);
+    if (btn && btn.disabled) {
+        alert('Modification indisponible à moins de 48h du match');
+        return;
+    }
+    // Récupérer les détails via AJAX (XMLHttpRequest) et ouvrir la modal pré-remplie
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '../../controllers/ReservationController.php?action=get_reservation&idReservation=' + encodeURIComponent(idReservation), true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                try {
+                    const data = JSON.parse(xhr.responseText);
+                    if (!data.success) {
+                        alert(data.message || 'Impossible de charger la réservation');
+                        return;
+                    }
+                    const r = data.data;
+
+                    // Pré-remplir
+                    document.getElementById('editIdReservation').value = r.idReservation;
+                    document.getElementById('editIdTerrain').value = r.idTerrain;
+                    document.getElementById('editTerrainName').value = r.terrain_nom || ('Terrain #' + r.idTerrain);
+                    document.getElementById('editTailleDisplay').value = r.taille || '';
+                    document.getElementById('editTypeDisplay').value = r.type || '';
+
+                    // Date min = aujourd'hui
+                    const today = new Date();
+                    const yyyy = today.getFullYear();
+                    const mm = String(today.getMonth() + 1).padStart(2, '0');
+                    const dd = String(today.getDate()).padStart(2, '0');
+                    const dateInput = document.getElementById('editDateReservation');
+                    dateInput.min = `${yyyy}-${mm}-${dd}`;
+
+                    document.getElementById('editDateReservation').value = r.dateReservation;
+                    document.getElementById('editIdCreneau').value = r.idCreneau;
+                    document.getElementById('editDemande').value = r.demande || '';
+                    document.getElementById('editBallon').checked = r.ballon == 1;
+                    document.getElementById('editArbitre').checked = r.arbitre == 1;
+                    document.getElementById('editMaillot').checked = r.maillot == 1;
+                    document.getElementById('editDouche').checked = r.douche == 1;
+
+                    document.getElementById('reservationEditModal').classList.add('ft-modal-open');
+                } catch (e) {
+                    console.error(e);
+                    alert('Erreur lors du chargement de la réservation');
+                }
+            } else {
+                alert('Erreur de connexion (' + xhr.status + ')');
+            }
+        }
+    };
+    xhr.onerror = function() {
+        alert('Erreur réseau lors du chargement');
+    };
+    xhr.send();
 }
+
+// Gestion fermeture du modal de modification
+document.getElementById('reservationEditModalClose').addEventListener('click', function() {
+    document.getElementById('reservationEditModal').classList.remove('ft-modal-open');
+});
+document.getElementById('reservationEditCancelBtn').addEventListener('click', function() {
+    document.getElementById('reservationEditModal').classList.remove('ft-modal-open');
+});
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('reservationEditModal');
+    if (event.target === modal) modal.classList.remove('ft-modal-open');
+});
+
+// Soumission du formulaire de modification via AJAX
+document.getElementById('reservationEditForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = this;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enregistrement...';
+
+    const formData = new FormData(form);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '../../controllers/ReservationController.php?action=update', true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            if (xhr.status === 200) {
+                try {
+                    const data = JSON.parse(xhr.responseText);
+                    if (data.success) {
+                        // Retour visuel identique au flux de réservation
+                        alert('Réservation mise à jour avec succès');
+                        document.getElementById('reservationEditModal').classList.remove('ft-modal-open');
+                        // Rafraîchit la liste sans recharger la page (forcer re-render même si IDs inchangés)
+                        forceReservationsRefresh = true;
+                        updateReservations();
+                    } else {
+                        alert(data.message || 'Erreur lors de la mise à jour');
+                    }
+                } catch (e) {
+                    console.error(e);
+                    alert('Erreur lors du traitement de la réponse');
+                }
+            } else {
+                alert('Erreur de connexion (' + xhr.status + ')');
+            }
+        }
+    };
+    xhr.onerror = function() {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        alert('Erreur réseau lors de la mise à jour');
+    };
+    xhr.send(formData);
+});
 </script>
 </body>
 </html>
