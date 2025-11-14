@@ -105,7 +105,7 @@ if ($reservationFeedback !== null) {
           </div>
           <div class="ft-stat-body">
             <div class="ft-stat-value" id="terrainsDisponibles">0</div>
-            <div class="ft-stat-label">Terrains disponibles</div>
+            <div class="ft-stat-label">Terrains disponibles pour aujourd'hui</div>
           </div>
         </div>
         
@@ -115,7 +115,7 @@ if ($reservationFeedback !== null) {
           </div>
           <div class="ft-stat-body">
             <div class="ft-stat-value" id="creneauxDisponibles">0</div>
-            <div class="ft-stat-label">Créneaux disponibles</div>
+            <div class="ft-stat-label">Créneaux disponibles pour aujourd'hui</div>
           </div>
         </div>
       </div>
@@ -124,7 +124,7 @@ if ($reservationFeedback !== null) {
     <!-- Section Terrains disponibles -->
     <section class="ft-section">
       <div class="ft-section-head">
-        <h2 class="ft-section-title">Terrains disponibles</h2>
+        <h2 class="ft-section-title">Terrains disponibles pour aujourd'hui</h2>
         <p class="ft-section-subtitle">Réservez un créneau horaire ou plusieurs jours pour un tournoi</p>
       </div>
       
@@ -138,7 +138,7 @@ if ($reservationFeedback !== null) {
     <section class="ft-section">
       <div class="ft-section-head">
         <h2 class="ft-section-title">Terrains indisponibles</h2>
-        <p class="ft-section-subtitle">Terrains complets ou temporairement fermés</p>
+        <p class="ft-section-subtitle">Terrains complets aujourd'hui ou temporairement fermés</p>
       </div>
       
       <div class="ft-list" id="terrains-indisponibles-list">
@@ -586,10 +586,12 @@ function updateTerrainsList(type, terrains) {
     let html = '';
     terrains.forEach(terrain => {
         const badges = getTerrainBadges(terrain);
-        const creneauxText = type === 'disponibles' 
-            ? `<p class="ft-muted"><strong>${terrain.creneaux_disponibles || 0} créneaux disponibles</strong></p>`
-            : '<p class="ft-muted"><strong>Complet ou indisponible</strong></p>';
-        
+        const creneauxText = !terrain.disponible ? 
+    '<p class="ft-muted"><strong>Terrain temporairement fermé</strong></p>' :
+    (type === 'disponibles' ? 
+        `<p class="ft-muted"><strong>${terrain.creneaux_disponibles || 0} créneaux disponibles pour aujourd'hui</strong></p>` :
+        '<p class="ft-muted"><strong>Complet aujourd\'hui - Disponible pour dates futures</strong></p>'
+    );
         html += `
             <div class="ft-card ft-booking" data-terrain-id="${terrain.idTerrain}">
                 <div class="ft-booking-content">
@@ -606,13 +608,13 @@ function updateTerrainsList(type, terrains) {
                                 onclick="openTerrainModal(${terrain.idTerrain})">
                             Détails
                         </button>
-                        ${type === 'disponibles' ? 
-                            `<button class="ft-btn ft-btn-primary" onclick="reserverTerrain(${terrain.idTerrain})">
-                                Réserver
-                            </button>` : 
-                            `<button class="ft-btn ft-btn-secondary" disabled>
-                                Indisponible
-                            </button>`
+                        ${terrain.disponible ? 
+                        `<button class="ft-btn ft-btn-primary" onclick="reserverTerrain(${terrain.idTerrain})">
+                        ${terrain.creneaux_disponibles > 0 ? 'Réserver' : 'Réserver pour date future'}
+                        </button>` :
+                        `<button class="ft-btn ft-btn-secondary" disabled>
+                        En maintenance
+                        </button>`
                         }
                     </div>
                 </div>
@@ -647,8 +649,8 @@ function getTerrainBadges(terrain) {
     return `
         <span class="ft-badge">${terrain.taille || 'Taille non spécifiée'}</span>
         <span class="ft-badge">${terrain.type || 'Type non spécifié'}</span>
-        <span class="ft-badge ${terrain.disponible ? 'ft-badge-success' : 'ft-badge-danger'}">
-            ${terrain.disponible ? 'Disponible' : 'Indisponible'}
+        <span class="ft-badge ${terrain.disponible ? (terrain.creneaux_disponibles > 0 ? 'ft-badge-success' : 'ft-badge-warning') : 'ft-badge-danger'}">
+        ${terrain.disponible ? (terrain.creneaux_disponibles > 0 ? 'Disponible' : 'Complet aujourd\'hui') : 'En maintenance'}
         </span>
     `;
 }
@@ -684,14 +686,14 @@ function openTerrainModal(terrainId) {
             <li><strong>Prix:</strong> ${terrain.prix_heure ? parseFloat(terrain.prix_heure).toFixed(2).replace('.', ',') + ' MAD/heure' : 'Non spécifié'}</li>
         </ul>
         <div class="ft-modal-actions">
-            ${terrain.disponible && (terrain.creneaux_disponibles > 0) ? 
-                `<button class="ft-btn ft-btn-primary" onclick="reserverTerrain(${terrain.idTerrain})">
-                    Réserver maintenant
-                </button>` : 
-                `<button class="ft-btn ft-btn-secondary" disabled>
-                    Indisponible pour réservation
-                </button>`
-            }
+            ${terrain.disponible ? 
+    `<button class="ft-btn ft-btn-primary" onclick="reserverTerrain(${terrain.idTerrain})">
+        ${terrain.creneaux_disponibles > 0 ? 'Réserver maintenant' : 'Réserver pour date future'}
+    </button>` :
+    `<button class="ft-btn ft-btn-secondary" disabled>
+        Terrain en maintenance
+    </button>`
+}
         </div>
     `;
     
