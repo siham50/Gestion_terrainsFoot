@@ -17,6 +17,48 @@ class ReservationController {
         }
     }
 
+    public function getDisponibilites($idTerrain, $dateReservation) {
+        if (!$idTerrain || !$dateReservation) {
+            return ['success' => false, 'message' => 'Paramètres manquants'];
+        }
+        try {
+            $slots = $this->reservationModel->getDisponibilitesForTerrainDate((int)$idTerrain, $dateReservation);
+            return ['success' => true, 'data' => $slots];
+        } catch (Exception $e) {
+            return ['success' => false, 'message' => 'Erreur serveur'];
+        }
+    }
+
+    public function getQuote($idTerrain, $options) {
+        if (!$idTerrain) {
+            return ['success' => false, 'message' => 'Paramètres manquants'];
+        }
+        require_once __DIR__ . '/../classes/Prix.php';
+        $prixModel = new Prix();
+        $montantTerrain = $prixModel->getPrixByTerrainId((int)$idTerrain);
+        
+        // Si le prix terrain n'existe pas, utiliser 0 au lieu de retourner une erreur
+        if ($montantTerrain === null) {
+            $montantTerrain = 0.0;
+        }
+        
+        $refs = ['ballon','arbitre','maillot','douche'];
+        $servicePrix = $prixModel->getServicesPrix($refs);
+        $montantService = 0.0;
+        foreach ($refs as $ref) {
+            $selected = !empty($options[$ref]);
+            if ($selected && isset($servicePrix[$ref])) {
+                $montantService += (float)$servicePrix[$ref];
+            }
+        }
+        return [
+            'success' => true,
+            'montantTerrain' => (float)$montantTerrain,
+            'montantService' => (float)$montantService,
+            'montantTotal' => (float)$montantTerrain + (float)$montantService,
+        ];
+    }
+
     // Récupérer une réservation d'un utilisateur (sécurité incluse)
     public function getReservationForUser($idReservation, $idUtilisateur) {
         return $this->reservationModel->getReservationByIdForUser($idReservation, $idUtilisateur);
@@ -250,11 +292,35 @@ class ReservationController {
 if (isset($_GET['action'])) {
     session_start();
     $controller = new ReservationController();
+    $action = $_GET['action'];
     
-    switch ($_GET['action']) {
+    switch ($action) {
         case 'create':
             header('Content-Type: application/json');
             $result = $controller->createReservation(true);
+            echo json_encode($result);
+            break;
+        case 'get_disponibilites':
+            header('Content-Type: application/json');
+            $idTerrain = isset($_GET['idTerrain']) ? (int)$_GET['idTerrain'] : 0;
+            $date = isset($_GET['date']) ? $_GET['date'] : null;
+            $result = $controller->getDisponibilites($idTerrain, $date);
+            echo json_encode($result);
+            break;
+        case 'quote':
+            error_log("ReservationController: case quote atteint");
+            header('Content-Type: application/json');
+            $idTerrain = isset($_GET['idTerrain']) ? (int)$_GET['idTerrain'] : 0;
+            error_log("ReservationController: idTerrain = " . $idTerrain);
+            $options = [
+                'ballon' => isset($_GET['ballon']) ? (int)$_GET['ballon'] : 0,
+                'arbitre' => isset($_GET['arbitre']) ? (int)$_GET['arbitre'] : 0,
+                'maillot' => isset($_GET['maillot']) ? (int)$_GET['maillot'] : 0,
+                'douche' => isset($_GET['douche']) ? (int)$_GET['douche'] : 0,
+            ];
+            error_log("ReservationController: options = " . json_encode($options));
+            $result = $controller->getQuote($idTerrain, $options);
+            error_log("ReservationController: result = " . json_encode($result));
             echo json_encode($result);
             break;
         case 'get_reservation':

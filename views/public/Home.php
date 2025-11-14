@@ -114,7 +114,7 @@ if ($reservationFeedback !== null) {
             <svg class="ft-ic" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
           <div class="ft-stat-body">
-            <div class="ft-stat-value" id="creneauxDisponibles">0</div>
+            <div class="ft-stat-value" id="creneauxDisponibles">12</div>
             <div class="ft-stat-label">Créneaux disponibles</div>
           </div>
         </div>
@@ -235,6 +235,26 @@ if ($reservationFeedback !== null) {
             </div>
           </div>
 
+          <div class="ft-form-group" style="grid-column: 1 / -1;">
+            <label>Estimation du prix</label>
+            <div class="ft-card" style="padding: 16px; background: rgba(43,217,151,0.05); border: 1px solid var(--ft-border);">
+              <div style="display: flex; justify-content: space-between; gap: 24px;">
+                <div style="flex: 1;">
+                  <div class="ft-muted" style="font-size: 12px; margin-bottom: 4px;">Prix terrain</div>
+                  <div id="ppTerrain" style="font-weight: 600; font-size: 18px; color: var(--ft-text);">0.00 DH</div>
+                </div>
+                <div style="flex: 1;">
+                  <div class="ft-muted" style="font-size: 12px; margin-bottom: 4px;">Services</div>
+                  <div id="ppService" style="font-weight: 600; font-size: 18px; color: var(--ft-text);">0.00 DH</div>
+                </div>
+                <div style="flex: 1;">
+                  <div class="ft-muted" style="font-size: 12px; margin-bottom: 4px;">Total</div>
+                  <div id="ppTotal" style="font-weight: 700; font-size: 20px; color: var(--ft-accent);">0.00 DH</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Informations du client -->
           <!-- (Supprimé: les informations utilisateur sont déjà connues via la session) -->
 
@@ -331,6 +351,12 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (e) {
         console.warn('Impossible de lire le paramètre idMatch:', e);
     }
+    
+    // Initialiser les listeners pour le prix dynamique
+    bindPriceListeners();
+    
+    // Démarrer le watcher pour la modal de réservation
+    startReservationModalWatcher();
 });
 
 // Écouteurs d'événements
@@ -723,6 +749,10 @@ function reserverTerrain(terrainId) {
     dateInput.min = `${yyyy}-${mm}-${dd}`;
 
     document.getElementById('reservationModal').classList.add('ft-modal-open');
+    // Mettre à jour le prix immédiatement
+    setTimeout(() => {
+        updateQuote();
+    }, 100);
 }
 
 // Réinitialiser les filtres
@@ -875,6 +905,162 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+// Lier les listeners pour les options de service
+function bindPriceListeners() {
+    ['ballon', 'arbitre', 'maillot', 'douche'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', updateQuote);
+        }
+    });
+}
+
+// Mettre à jour le devis de prix
+function updateQuote() {
+    const idTerrain = (document.getElementById('resTerrainId') || {}).value || '';
+    if (!idTerrain) {
+        console.log('updateQuote: pas de terrain sélectionné');
+        return;
+    }
+    
+    const ballon = document.getElementById('ballon')?.checked ? 1 : 0;
+    const arbitre = document.getElementById('arbitre')?.checked ? 1 : 0;
+    const maillot = document.getElementById('maillot')?.checked ? 1 : 0;
+    const douche = document.getElementById('douche')?.checked ? 1 : 0;
+    
+    // Construire l'URL avec URLSearchParams pour éviter les problèmes d'encodage
+    const params = new URLSearchParams({
+        action: 'quote',
+        idTerrain: idTerrain,
+        ballon: ballon,
+        arbitre: arbitre,
+        maillot: maillot,
+        douche: douche
+    });
+    
+    // Utiliser un chemin relatif depuis views/public vers controllers
+    const url = '../../controllers/ReservationController.php?' + params.toString();
+    console.log('updateQuote: appel AJAX', url);
+    
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            console.log('updateQuote: réponse reçue', xhr.status, xhr.responseText);
+            if (xhr.status === 200) {
+                try {
+                    const resp = JSON.parse(xhr.responseText);
+                    console.log('updateQuote: données parsées', resp);
+                    if (resp && resp.success) {
+                        const t = document.getElementById('ppTerrain');
+                        const s = document.getElementById('ppService');
+                        const tot = document.getElementById('ppTotal');
+                        if (t) t.textContent = Number(resp.montantTerrain).toFixed(2) + ' DH';
+                        if (s) s.textContent = Number(resp.montantService).toFixed(2) + ' DH';
+                        if (tot) tot.textContent = Number(resp.montantTotal).toFixed(2) + ' DH';
+                        console.log('updateQuote: prix mis à jour');
+                    } else {
+                        console.warn('updateQuote: échec', resp?.message);
+                    }
+                } catch (e) {
+                    console.error('Erreur parsing quote:', e, xhr.responseText);
+                }
+            } else {
+                console.error('updateQuote: erreur HTTP', xhr.status);
+            }
+        }
+    };
+    xhr.send();
+}
+
+// Surveiller l'ouverture de la modal et mettre à jour le prix
+function startReservationModalWatcher() {
+    const modal = document.getElementById('reservationModal');
+    if (!modal) return;
+    
+    let lastTerrain = null;
+    let lastDate = null;
+    
+    function tick() {
+        const isOpen = modal.classList && modal.classList.contains('ft-modal-open');
+        if (isOpen) {
+            const idTerrain = (document.getElementById('resTerrainId') || {}).value || '';
+            const date = (document.getElementById('dateReservation') || {}).value || '';
+            
+            if (idTerrain && idTerrain !== lastTerrain) {
+                lastTerrain = idTerrain;
+                updateQuote();
+            }
+            
+            if (idTerrain && date && date !== lastDate) {
+                lastDate = date;
+                updateCreneauxDisponibles();
+            }
+        } else {
+            lastTerrain = null;
+            lastDate = null;
+        }
+        window._resWatcher = window.setTimeout(tick, 600);
+    }
+    
+    if (window._resWatcher) clearTimeout(window._resWatcher);
+    tick();
+}
+
+// Mettre à jour les créneaux disponibles
+function updateCreneauxDisponibles() {
+    const idTerrainEl = document.getElementById('resTerrainId');
+    const dateEl = document.getElementById('dateReservation');
+    const selectEl = document.getElementById('idCreneau');
+    if (!idTerrainEl || !dateEl || !selectEl) return;
+
+    const idTerrain = idTerrainEl.value;
+    const date = dateEl.value;
+    if (!idTerrain || !date) return;
+
+    const url = `../../controllers/ReservationController.php?action=get_disponibilites&idTerrain=${encodeURIComponent(idTerrain)}&date=${encodeURIComponent(date)}`;
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                try {
+                    const resp = JSON.parse(xhr.responseText);
+                    if (resp.success && Array.isArray(resp.data)) {
+                        applyDisponibilitesToSelect(selectEl, resp.data);
+                    }
+                } catch (e) {
+                    console.warn('Réponse disponibilités invalide', e);
+                }
+            }
+        }
+    };
+    xhr.send();
+}
+
+// Appliquer les disponibilités au select
+function applyDisponibilitesToSelect(selectEl, slots) {
+    const map = {};
+    slots.forEach(s => { map[String(s.idCreneau)] = Number(s.disponible) === 1; });
+
+    let selectionReset = false;
+    for (let i = 0; i < selectEl.options.length; i++) {
+        const opt = selectEl.options[i];
+        const id = opt.value;
+        if (!id) continue;
+        const dispo = map.hasOwnProperty(id) ? map[id] : true;
+        opt.disabled = !dispo;
+        opt.textContent = opt.textContent.replace(/\s*\(indisponible\)$/i, '');
+        if (!dispo) {
+            opt.textContent += ' (indisponible)';
+            if (opt.selected) selectionReset = true;
+        }
+    }
+    if (selectionReset) {
+        selectEl.value = '';
+    }
 }
 </script>
 </body>

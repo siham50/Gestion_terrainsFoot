@@ -58,4 +58,28 @@ class Prix {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ? (int)$result['total'] : 0;
     }
+
+    
+    public function getPrixByReference($reference) {
+        $sql = "SELECT prix FROM prix WHERE reference = ? LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$reference]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (float)$row['prix'] : 0.0;
+    }
+
+    public function getServicesPrix(array $references) {
+        if (empty($references)) return [];
+        $references = array_unique(array_values(array_filter($references)));
+        if (empty($references)) return [];
+        $placeholders = implode(',', array_fill(0, count($references), '?'));
+        $sql = "SELECT reference, prix FROM prix WHERE reference IN ($placeholders)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($references);
+        $out = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $out[$row['reference']] = (float)$row['prix'];
+        }
+        return $out;
+    }
 }
