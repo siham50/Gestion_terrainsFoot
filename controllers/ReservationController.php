@@ -3,7 +3,7 @@
 
 require_once __DIR__ . '/../classes/Reservation.php';
 require_once __DIR__ . '/../classes/Utilisateur.php';
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../classes/Database.php';
 
 class ReservationController {
     private $reservationModel;

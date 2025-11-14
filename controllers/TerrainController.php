@@ -2,7 +2,7 @@
 // controllers/TerrainController.php
 
 require_once __DIR__ . '/../classes/Terrain.php';
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../classes/Database.php';
 
 class TerrainController {
     private $terrain;

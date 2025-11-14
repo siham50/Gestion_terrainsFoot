@@ -1,7 +1,7 @@
 <?php
 // classes/Terrain.php
 
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/Prix.php';
 
 class Terrain {

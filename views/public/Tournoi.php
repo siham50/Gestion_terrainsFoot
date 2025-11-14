@@ -16,7 +16,7 @@ if ($idTournoi <= 0) {
 
 // Charger les données depuis le contrôleur
 require_once __DIR__ . '/../../controllers/TournoiController.php';
-require_once __DIR__ . '/../../config/Database.php';
+require_once __DIR__ . '/../../classes/Database.php';
 
 $controller = new TournoiController();
 $tournoi = $controller->viewTournoi($idTournoi);

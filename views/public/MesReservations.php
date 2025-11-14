@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Charger les données depuis le contrôleur
 require_once __DIR__ . '/../../controllers/ReservationController.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../classes/Database.php';
 
 $controller = new ReservationController();
 $data = $controller->getMesReservationsData($_SESSION['user_id']);

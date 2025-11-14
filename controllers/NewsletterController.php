@@ -2,7 +2,7 @@
 // controllers/NewsletterController.php
 
 require_once __DIR__ . '/../classes/Newsletter.php';
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../classes/Database.php';
 
 class NewsletterController {
     private $newsletterModel;

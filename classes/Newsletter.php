@@ -1,7 +1,7 @@
 <?php
 // classes/Newsletter.php
 
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/Database.php';
 
 class Newsletter {
     private $db;

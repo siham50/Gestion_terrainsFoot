@@ -3,7 +3,7 @@
 
 require_once __DIR__ . '/../classes/Tournoi.php';
 require_once __DIR__ . '/../classes/Match.php';
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../classes/Database.php';
 
 class TournoiController {
     private $tournoiModel;

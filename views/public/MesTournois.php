@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Charger les données depuis le contrôleur
 require_once __DIR__ . '/../../controllers/TournoiController.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../classes/Database.php';
 
 $controller = new TournoiController();
 
