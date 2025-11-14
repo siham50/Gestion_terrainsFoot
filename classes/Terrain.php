@@ -41,10 +41,10 @@ public function readDisponibles() {
     try {
         $query = "SELECT t.*, 
                          (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) as reservations_aujourdhui,
-                         (12 - (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE())) as creneaux_disponibles
+                         (15 - (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE())) as creneaux_disponibles
                   FROM terrain t 
                   WHERE t.disponible = 1 
-                    AND (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) < 12
+                    AND (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) < 15 
                   ORDER BY t.date_modification DESC, t.idTerrain DESC";  // ← Tri par date de modification
         
 
@@ -64,10 +64,10 @@ public function readIndisponibles() {
     try {
         $query = "SELECT t.*, 
                          (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) as reservations_aujourdhui,
-                         (12 - (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE())) as creneaux_disponibles
+                         (15 - (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE())) as creneaux_disponibles
                   FROM terrain t 
                   WHERE t.disponible = 0 
-                     OR (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) >= 12
+                     OR (SELECT COUNT(*) FROM reservation r WHERE r.idTerrain = t.idTerrain AND r.dateReservation = CURDATE()) >= 15 
                   ORDER BY t.nom ASC";
         
         $stmt = $this->conn->prepare($query);

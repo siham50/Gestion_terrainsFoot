@@ -528,7 +528,7 @@ function filterTerrains(terrains) {
             );
 
             if (!nomMatch && !tailleMatch && !typeMatch && !mappedMatch) {
-                console.log('❌ Terrain filtré par recherche:', terrain.nom);
+                console.log('Terrain filtré par recherche:', terrain.nom);
                 return false;
             }
         }
@@ -541,7 +541,7 @@ function filterTerrains(terrains) {
                 return match;
             });
             if (!tailleMatch) {
-                console.log('❌ Terrain filtré par taille:', terrain.nom, 'Taille:', terrain.taille, 'Filtres taille:', currentFilters.sizes);
+                console.log('Terrain filtré par taille:', terrain.nom, 'Taille:', terrain.taille, 'Filtres taille:', currentFilters.sizes);
                 return false;
             }
         }
@@ -554,12 +554,12 @@ function filterTerrains(terrains) {
                 return match;
             });
             if (!typeMatch) {
-                console.log('❌ Terrain filtré par type:', terrain.nom, 'Type:', terrain.type, 'Filtres type:', currentFilters.types);
+                console.log('Terrain filtré par type:', terrain.nom, 'Type:', terrain.type, 'Filtres type:', currentFilters.types);
                 return false;
             }
         }
         
-        console.log('✅ Terrain conservé:', terrain.nom);
+        console.log('Terrain conservé:', terrain.nom);
         return true;
     });
 }
